@@ -15,7 +15,6 @@ class TransactionModel {
     required this.description,
   });
 
-  // Convert the object into a Map before sending it to the database
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -27,13 +26,12 @@ class TransactionModel {
     };
   }
 
-  // Convert a Map received from the database back into an Object
   factory TransactionModel.fromMap(Map<String, dynamic> map) {
     return TransactionModel(
       id: map['id'],
       userId: map['user_id'],
       categoryId: map['category_id'],
-      amount: map['amount'],
+      amount: (map['amount'] as num).toDouble(),
       date: DateTime.parse(map['date']),
       description: map['description'],
     );
