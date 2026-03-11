@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/presentation/pages/login_page.dart';

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:personal_finance_budgeting_system/routes/app_router.dart';
+import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/custom_button.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/custom_text_field.dart';
 
@@ -11,42 +12,81 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomTextField(
-              labelText: 'Email',
-              keyboardType: TextInputType.emailAddress,
-              prefixIcon: const Icon(Icons.email),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          padding: const EdgeInsets.all(24.0),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primaryColor,
+                AppColors.successColor,
+              ],
             ),
-            const SizedBox(height: 16.0),
-            CustomTextField(
-              labelText: 'Password',
-              obscureText: true,
-              prefixIcon: const Icon(Icons.lock),
-              suffixIcon: const Icon(Icons.visibility),
-            ),
-            const SizedBox(height: 24.0),
-            CustomButton(
-              text: 'Login',
-              onPressed: () {
-                // Simulate login
-                AuthService.login();
-                GoRouter.of(context).go('/dashboard');
-              },
-              // isLoading: true, // Example of loading state
-            ),
-            const SizedBox(height: 16.0),
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context).go('/register');
-              },
-              child: const Text('Don\'t have an account? Register'),
-            ),
-          ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(flex: 2),
+              Text(
+                'Welcome Back!',
+                style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  color: AppColors.onPrimaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Text(
+                'Sign in to continue to your financial journey',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColors.onPrimaryColor.withOpacity(0.8),
+                ),
+              ),
+              const Spacer(),
+              CustomTextField(
+                labelText: 'Email',
+                hintText: 'Enter your email',
+                keyboardType: TextInputType.emailAddress,
+                prefixIcon: const Icon(Icons.email, color: AppColors.primaryColor),
+              ),
+              const SizedBox(height: 16.0),
+              CustomTextField(
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                obscureText: true,
+                prefixIcon: const Icon(Icons.lock, color: AppColors.primaryColor),
+                suffixIcon: const Icon(Icons.visibility, color: AppColors.grey600),
+              ),
+              const SizedBox(height: 24.0),
+              CustomButton(
+                text: 'Login',
+                onPressed: () {
+                  // Simulate login
+                  AuthService.login();
+                  GoRouter.of(context).go('/dashboard');
+                },
+                backgroundColor: AppColors.onPrimaryColor,
+                textColor: AppColors.primaryColor,
+              ),
+              const SizedBox(height: 16.0),
+              TextButton(
+                onPressed: () {
+                  GoRouter.of(context).go('/register');
+                },
+                child: Text(
+                  'Don\'t have an account? Register',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppColors.onPrimaryColor,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+              const Spacer(flex: 2),
+            ],
+          ),
         ),
       ),
     );
