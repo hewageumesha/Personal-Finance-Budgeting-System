@@ -178,6 +178,3 @@ flutter run
 ## 📜 License
 
 This project is **developed solely for academic purposes**.
-
-
-Do you want me to do that next?

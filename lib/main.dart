@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:personal_finance_budgeting_system/routes/app_router.dart';
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Personal Finance App',
+      title: 'FinFlow',
       theme: AppTheme.lightTheme,
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
