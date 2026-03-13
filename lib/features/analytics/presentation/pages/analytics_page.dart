@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
 
@@ -19,9 +18,9 @@ class AnalyticsPage extends StatelessWidget {
             Text(
               'Monthly Spending Trends',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.onBackgroundColor,
+                  ),
             ),
             const SizedBox(height: 16.0),
             _buildChartPlaceholder(context, 'Line Chart: Spending over time'),
@@ -29,9 +28,9 @@ class AnalyticsPage extends StatelessWidget {
             Text(
               'Category-wise Breakdown',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.onBackgroundColor,
+                  ),
             ),
             const SizedBox(height: 16.0),
             _buildChartPlaceholder(context, 'Pie Chart: Expenses by Category'),
@@ -39,9 +38,9 @@ class AnalyticsPage extends StatelessWidget {
             Text(
               'Financial Insights',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.onBackgroundColor,
+                  ),
             ),
             const SizedBox(height: 16.0),
             _buildInsightCard(context, 'You spent 20% more on food this month.', Icons.fastfood, AppColors.errorColor),
@@ -59,12 +58,12 @@ class AnalyticsPage extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.surfaceColor,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 2,
-            blurRadius: 5,
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 3,
+            blurRadius: 7,
             offset: const Offset(0, 3),
           ),
         ],
@@ -73,8 +72,8 @@ class AnalyticsPage extends StatelessWidget {
         child: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: AppColors.grey600,
-          ),
+                color: AppColors.grey600,
+              ),
         ),
       ),
     );
@@ -83,8 +82,8 @@ class AnalyticsPage extends StatelessWidget {
   Widget _buildInsightCard(BuildContext context, String insight, IconData icon, Color color) {
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -95,8 +94,8 @@ class AnalyticsPage extends StatelessWidget {
               child: Text(
                 insight,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.onBackgroundColor,
-                ),
+                      color: AppColors.onBackgroundColor,
+                    ),
               ),
             ),
           ],

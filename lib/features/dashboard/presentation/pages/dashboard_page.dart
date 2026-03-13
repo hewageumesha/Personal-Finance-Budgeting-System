@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:personal_finance_budgeting_system/routes/app_router.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/custom_button.dart';
+import 'package:personal_finance_budgeting_system/shared/widgets/finflow_logo.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -12,7 +12,8 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const FinFlowLogo(textColor: AppColors.onPrimaryColor, iconSize: 28, textSize: 22),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -32,9 +33,9 @@ class DashboardPage extends StatelessWidget {
             Text(
               'Welcome, User!',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.onBackgroundColor,
+                  ),
             ),
             const SizedBox(height: 24.0),
             _buildBalanceCard(context),
@@ -52,17 +53,24 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildBalanceCard(BuildContext context) {
     return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(25.0),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [AppColors.primaryColor, AppColors.successColor],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryColor.withOpacity(0.3),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,18 +78,20 @@ class DashboardPage extends StatelessWidget {
             Text(
               'Total Balance',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.onPrimaryColor.withOpacity(0.8),
-              ),
+                    color: AppColors.onPrimaryColor.withOpacity(0.9),
+                    letterSpacing: 0.5,
+                  ),
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: 10.0),
             Text(
               '\$12,345.67',
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: AppColors.onPrimaryColor,
-                fontWeight: FontWeight.bold,
-              ),
+                    color: AppColors.onPrimaryColor,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 25.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -101,23 +111,23 @@ class DashboardPage extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, color: AppColors.onPrimaryColor.withOpacity(0.8), size: 18),
-            const SizedBox(width: 4),
+            Icon(icon, color: AppColors.onPrimaryColor.withOpacity(0.8), size: 20),
+            const SizedBox(width: 6),
             Text(
               title,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.onPrimaryColor.withOpacity(0.8),
-              ),
+                    color: AppColors.onPrimaryColor.withOpacity(0.8),
+                  ),
             ),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         Text(
           amount,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: AppColors.onPrimaryColor,
-            fontWeight: FontWeight.bold,
-          ),
+                color: AppColors.onPrimaryColor,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ],
     );
@@ -130,9 +140,9 @@ class DashboardPage extends StatelessWidget {
         Text(
           'Quick Actions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.onBackgroundColor,
-          ),
+                fontWeight: FontWeight.bold,
+                color: AppColors.onBackgroundColor,
+              ),
         ),
         const SizedBox(height: 16.0),
         Row(
@@ -153,17 +163,20 @@ class DashboardPage extends StatelessWidget {
         FloatingActionButton(
           heroTag: label, // Unique tag for each FloatingActionButton
           onPressed: onPressed,
-          backgroundColor: AppColors.surfaceColor,
-          foregroundColor: AppColors.primaryColor,
-          mini: true,
-          child: Icon(icon),
+          backgroundColor: AppColors.primaryColor,
+          foregroundColor: AppColors.onPrimaryColor,
+          mini: false,
+          elevation: 4,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: Icon(icon, size: 28),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 10.0),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppColors.onBackgroundColor,
-          ),
+                color: AppColors.onBackgroundColor,
+                fontWeight: FontWeight.w600,
+              ),
         ),
       ],
     );
@@ -176,9 +189,9 @@ class DashboardPage extends StatelessWidget {
         Text(
           'Recent Transactions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.onBackgroundColor,
-          ),
+                fontWeight: FontWeight.bold,
+                color: AppColors.onBackgroundColor,
+              ),
         ),
         const SizedBox(height: 16.0),
         // Placeholder for a list of recent transactions
@@ -189,18 +202,21 @@ class DashboardPage extends StatelessWidget {
           itemBuilder: (context, index) {
             return Card(
               margin: const EdgeInsets.only(bottom: 10),
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
               child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: AppColors.primaryColor.withOpacity(0.1),
                   child: Icon(index % 2 == 0 ? Icons.shopping_cart : Icons.restaurant, color: AppColors.primaryColor),
                 ),
-                title: Text(index % 2 == 0 ? 'Groceries' : 'Dinner Out'),
-                subtitle: Text(index % 2 == 0 ? 'Food & Drinks' : 'Dining'),
+                title: Text(index % 2 == 0 ? 'Groceries' : 'Dinner Out', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                subtitle: Text(index % 2 == 0 ? 'Food & Drinks' : 'Dining', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.grey600)),
                 trailing: Text(
                   index % 2 == 0 ? '-\$55.00' : '-\$30.00',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: index % 2 == 0 ? AppColors.errorColor : AppColors.errorColor,
-                  ),
+                        color: index % 2 == 0 ? AppColors.errorColor : AppColors.errorColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 onTap: () { /* TODO: Navigate to transaction detail */ },
               ),
@@ -214,7 +230,7 @@ class DashboardPage extends StatelessWidget {
             onPressed: () {
               GoRouter.of(context).go('/dashboard/transactions');
             },
-            child: const Text('View All Transactions'),
+            child: Text('View All Transactions', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: AppColors.primaryColor)),
           ),
         ),
       ],
@@ -228,9 +244,9 @@ class DashboardPage extends StatelessWidget {
         Text(
           'Spending Overview',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.onBackgroundColor,
-          ),
+                fontWeight: FontWeight.bold,
+                color: AppColors.onBackgroundColor,
+              ),
         ),
         const SizedBox(height: 16.0),
         // Placeholder for a chart or spending summary
@@ -253,8 +269,8 @@ class DashboardPage extends StatelessWidget {
             child: Text(
               'Chart Placeholder (e.g., Pie Chart)',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.grey600,
-              ),
+                    color: AppColors.grey600,
+                  ),
             ),
           ),
         ),

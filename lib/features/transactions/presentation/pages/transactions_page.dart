@@ -18,6 +18,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
     {'name': 'Rent', 'category': 'Housing', 'amount': -1200.00, 'date': '2024-03-05', 'type': 'expense'},
     {'name': 'Freelance Work', 'category': 'Income', 'amount': 800.00, 'date': '2024-03-03', 'type': 'income'},
     {'name': 'Books', 'category': 'Education', 'amount': -30.00, 'date': '2024-03-02', 'type': 'expense'},
+    {'name': 'Utilities', 'category': 'Bills', 'amount': -75.00, 'date': '2024-03-01', 'type': 'expense'},
+    {'name': 'Bonus', 'category': 'Income', 'amount': 1000.00, 'date': '2024-02-28', 'type': 'income'},
   ];
 
   List<Map<String, dynamic>> get _filteredTransactions {
@@ -59,41 +61,42 @@ class _TransactionsPageState extends State<TransactionsPage> {
           Expanded(
             child: _filteredTransactions.isEmpty
                 ? Center(
-              child: Text(
-                'No transactions found for this filter.',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            )
+                    child: Text(
+                      'No transactions found for this filter.',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  )
                 : ListView.builder(
-              itemCount: _filteredTransactions.length,
-              itemBuilder: (context, index) {
-                final transaction = _filteredTransactions[index];
-                final isExpense = transaction['type'] == 'expense';
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  elevation: 2,
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: isExpense ? AppColors.errorColor.withOpacity(0.1) : AppColors.successColor.withOpacity(0.1),
-                      child: Icon(
-                        isExpense ? Icons.arrow_downward : Icons.arrow_upward,
-                        color: isExpense ? AppColors.errorColor : AppColors.successColor,
-                      ),
-                    ),
-                    title: Text(transaction['name']),
-                    subtitle: Text('${transaction['category']} - ${transaction['date']}'),
-                    trailing: Text(
-                      '${isExpense ? '-' : '+'}\$${transaction['amount'].abs().toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: isExpense ? AppColors.errorColor : AppColors.successColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onTap: () { /* TODO: Navigate to transaction detail */ },
+                    itemCount: _filteredTransactions.length,
+                    itemBuilder: (context, index) {
+                      final transaction = _filteredTransactions[index];
+                      final isExpense = transaction['type'] == 'expense';
+                      return Card(
+                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: isExpense ? AppColors.errorColor.withOpacity(0.1) : AppColors.successColor.withOpacity(0.1),
+                            child: Icon(
+                              isExpense ? Icons.arrow_downward : Icons.arrow_upward,
+                              color: isExpense ? AppColors.errorColor : AppColors.successColor,
+                            ),
+                          ),
+                          title: Text(transaction['name'], style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                          subtitle: Text('${transaction['category']} - ${transaction['date']}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.grey600)),
+                          trailing: Text(
+                            '${isExpense ? '-' : '+'}\$${transaction['amount'].abs().toStringAsFixed(2)}',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: isExpense ? AppColors.errorColor : AppColors.successColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          onTap: () { /* TODO: Navigate to transaction detail */ },
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -112,8 +115,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
       selectedColor: AppColors.primaryColor.withOpacity(0.2),
       checkmarkColor: AppColors.primaryColor,
       labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-        color: _selectedFilter == label ? AppColors.primaryColor : AppColors.onBackgroundColor,
-      ),
+            color: _selectedFilter == label ? AppColors.primaryColor : AppColors.onBackgroundColor,
+          ),
+      side: BorderSide(color: AppColors.primaryColor.withOpacity(0.5)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
 }
