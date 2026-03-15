@@ -8,6 +8,7 @@ import 'package:personal_finance_budgeting_system/features/analytics/presentatio
 import 'package:personal_finance_budgeting_system/features/budget/presentation/pages/budget_page.dart';
 import 'package:personal_finance_budgeting_system/features/profile/presentation/pages/profile_page.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/scaffold_with_navbar.dart';
+import 'package:personal_finance_budgeting_system/ui/auth/widgets/login_screen.dart';
 
 // This is a mock authentication service. In a real app, this would interact with a backend.
 class AuthService {

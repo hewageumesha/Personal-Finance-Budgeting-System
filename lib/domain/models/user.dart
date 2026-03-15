@@ -1,8 +1,8 @@
 class User {
-  final int id;
-  final String email;
-  final String username;
-  final String baseCurrency;
+  final String? id;
+  final String? email;
+  final String? username;
+  final String? baseCurrency;
 
   User(
       {required this.id,
@@ -37,14 +37,14 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-        id: map['id'] as int,
+        id: map['id'] as String,
         email: map['email'] as String,
         username: map['username'] as String,
         baseCurrency: map['base_currency'] as String);
   }
 
   User copyWith(
-      {int? id, String? email, String? username, String? baseCurrency}) {
+      {String? id, String? email, String? username, String? baseCurrency}) {
     return User(
         id: id ?? this.id,
         username: username ?? this.username,
