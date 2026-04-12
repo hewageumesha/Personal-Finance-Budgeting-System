@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:personal_finance_budgeting_system/features/authentication/presentation/pages/login_page.dart';
-import 'package:personal_finance_budgeting_system/features/authentication/presentation/pages/registration_page.dart';
 import 'package:personal_finance_budgeting_system/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:personal_finance_budgeting_system/features/transactions/presentation/pages/transactions_page.dart';
 import 'package:personal_finance_budgeting_system/features/analytics/presentation/pages/analytics_page.dart';
 import 'package:personal_finance_budgeting_system/features/budget/presentation/pages/budget_page.dart';
 import 'package:personal_finance_budgeting_system/features/profile/presentation/pages/profile_page.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/scaffold_with_navbar.dart';
-import 'package:personal_finance_budgeting_system/ui/auth/widgets/login_screen.dart';
+
+import '../features/authentication/presentation/screens/login_screen.dart';
+import '../features/authentication/presentation/screens/registration_page.dart';
 
 // This is a mock authentication service. In a real app, this would interact with a backend.
 class AuthService {

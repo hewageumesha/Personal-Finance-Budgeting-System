@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1011207861048",
+    "project_id": "financial-app-905e3",
+    "storage_bucket": "financial-app-905e3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011207861048:android:8dea48e163513654ee07cd",
+        "android_client_info": {
+          "package_name": "com.example.personal_finance_budgeting_system"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE3fgv8hhmNaA3UaFiufYbogPvT4SpxxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
