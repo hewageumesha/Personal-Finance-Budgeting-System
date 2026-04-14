@@ -16,9 +16,9 @@ class AuthRepositoryImpl extends AuthRepository {
 
       final String uid = credential.user!.uid;
       final user = await _localSource.getUserById(uid);
+
       return user;
     } on FirebaseAuthException catch (e) {
-      print(e.message);
       throw Exception(e.message);
     }
   }

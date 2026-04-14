@@ -1,5 +1,5 @@
 class UserEntity {
-  final int uid;
+  final String uid;
   final String email;
   final String username;
   final DateTime createdAt;

@@ -18,7 +18,7 @@ class DashboardPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              AuthService.logout();
+              // AuthService.logout();
               GoRouter.of(context).go('/login');
             },
             tooltip: 'Logout',

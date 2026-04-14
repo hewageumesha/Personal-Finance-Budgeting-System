@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/domain/entities/user_entity.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/domain/repositories/auth_repository.dart';
 
-class AuthProvider extends ChangeNotifier {
+class AuthProviderr extends ChangeNotifier {
   final AuthRepository _authRepository;
   UserEntity? _user;
   bool _isLoading = false;
 
-  AuthProvider(this._authRepository) {
+  AuthProviderr(this._authRepository) {
     _authRepository.onAuthStateChanged.listen((user) {
       _user = user;
       notifyListeners();
@@ -16,6 +16,8 @@ class AuthProvider extends ChangeNotifier {
 
   // getter
   UserEntity? get user => _user;
+
+  bool get isAuthenticated => _user != null;
 
   bool get isLoading => _isLoading;
 
@@ -32,16 +34,22 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> signUp(String username,String email, String password) async {
+  Future<void> signUp(String username, String email, String password) async {
     _isLoading = true;
     notifyListeners();
     try {
-      _user = await _authRepository.signUp(username,email, password);
+      _user = await _authRepository.signUp(username, email, password);
     } catch (e) {
       rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> loginOut() async {
+    await _authRepository.loginOut();
+    _user = null;
+    notifyListeners();
   }
 }

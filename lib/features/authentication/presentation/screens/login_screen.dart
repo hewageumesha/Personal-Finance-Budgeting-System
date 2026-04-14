@@ -121,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
             text: 'Login',
             onPressed: () async {
               try {
-                await context.read<AuthProvider>().signIn(
+                await context.read<AuthProviderr>().signIn(
                     _emailController.text.trim(), _passwordController.text);
 
                 if (context.mounted) {

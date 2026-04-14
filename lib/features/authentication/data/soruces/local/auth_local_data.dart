@@ -18,7 +18,7 @@ class AuthLocalDataSource {
   Future<UserModel?> getUserById(String uid) async {
     final db = await _databaseHelper.db;
     List<Map<String, dynamic>>? usersList =
-        await db?.query('user', where: 'uid = ?', whereArgs: [uid]);
+        await db?.query('users', where: 'uid = ?', whereArgs: [uid]);
 
     if (usersList!.isNotEmpty) {
       return UserModel.fromMap(usersList.first);

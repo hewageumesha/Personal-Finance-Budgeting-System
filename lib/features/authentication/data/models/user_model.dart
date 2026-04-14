@@ -11,7 +11,7 @@ class UserModel extends UserEntity {
   // factory for converting firebase usr to local-app usr
   factory UserModel.fromFirebase(dynamic user, String username) {
     return UserModel(
-      uid: user.id,
+      uid: user.uid,
       email: user.email,
       username: username,
       createdAt: DateTime.now(),
@@ -24,7 +24,7 @@ class UserModel extends UserEntity {
         uid: map['uid'],
         email: map['email'],
         username: map['username'],
-        createdAt: map['createdAt']);
+        createdAt: DateTime.parse(map['createdAt']));
   }
 
   // convert User to  Map for database operations
@@ -33,7 +33,7 @@ class UserModel extends UserEntity {
       'uid': uid,
       'username': username,
       'email': email,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
