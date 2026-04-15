@@ -5,15 +5,18 @@ import '../../models/user_model.dart';
 class AuthLocalDataSource {
   final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
 
-  Future<void> saveUser(UserEntity user) async {
+  Future<void> saveUser(UserModel user) async {
     final db = await _databaseHelper.db;
-    await db?.insert('users', {
-      'uid': user.uid,
-      'username': user.username,
-      'email': user.email,
-      'createdAt': user.createdAt
-    });
+    await db?.insert('users', user.toMap());
   }
+
+  // previously i hardcode that toMap part like this
+  // {
+  // 'uid': user.uid,
+  // 'username': user.username,
+  // 'email': user.email,
+  // 'createdAt': user.createdAt
+  // }
 
   Future<UserModel?> getUserById(String uid) async {
     final db = await _databaseHelper.db;

@@ -24,6 +24,7 @@ class DatabaseHelper {
   }
 
   Future<void> _createDb(Database db, int version) async {
+    // users table
     await db.execute('''
       CREATE TABLE users(
         uid TEXT PRIMARY KEY,
@@ -32,39 +33,30 @@ class DatabaseHelper {
         createdAt TEXT NOT NULL
       )
     ''');
+
+    // category table
+    await db.execute('''
+        CREATE TABLE categories(
+          cid TEXT PRIMARY KEY,
+          cname TEXT NOT NULL,
+          cType TEXT NOT NULL, 
+          user_uid TEXT NOT NULL,
+          FOREIGN KEY (user_uid) REFERENCES users (uid) ON DELETE CASCADE
+        )
+    ''');
+
+    // transaction table
+    await db.execute('''
+      CREATE TABLE transaction(
+        tid TEXT PRIMARY KEY,
+        amount REAL not null,
+        description text,
+        date text not null,
+        category_id TEXT NOT NULL, 
+        user_uid TEXT NOT NULL,
+        FOREIGN KEY (category_id) REFERENCES categories (cid) ON DELETE CASCADE
+        FOREIGN KEY (user_uid) REFERENCES users (uid) ON DELETE CASCADE
+      )
+  ''');
   }
-
-  Future<void> verifyTables() async {
-    final dbClient = await db;
-    // Query the internal SQLite master table to see what exists
-    var tables = await dbClient!.rawQuery(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
-    );
-
-    if (tables.isNotEmpty) {
-      print("✅ SUCCESS: Table 'users' exists!");
-    } else {
-      print("❌ ERROR: Table 'users' NOT found in the database.");
-    }
-  }
-
-  Future<void> seedMockUser() async {
-    final dbClient = await db;
-
-    // Hardcoded test data
-    // CRITICAL: The 'uid' must match a user you've already created in the Firebase Console
-    await dbClient?.insert(
-      'users',
-      {
-        'uid': 'YB7EcWKY3dMjBmEeqYFN5g9R9bI2',
-        'email': 'm@example.com',
-        'username': 'TestDev2026',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace, // Overwrites if already exists
-    );
-
-    print("Mock user seeded successfully!");
-  }
-
 }

@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:personal_finance_budgeting_system/features/authentication/data/soruces/local/auth_local_data.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_model.dart';
+import '../sources/local/auth_local_data.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
