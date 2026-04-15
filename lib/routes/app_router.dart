@@ -44,26 +44,26 @@ class AppRouter {
                 name: 'dashboard',
                 builder: (context, state) => const DashboardPage(),
                 routes: [
-                  // GoRoute(
-                  //   path: 'transactions',
-                  //   name: 'transactions',
-                  //   builder: (context, state) => const TransactionsPage(),
-                  // ),
-                  // GoRoute(
-                  //   path: 'analytics',
-                  //   name: 'analytics',
-                  //   builder: (context, state) => const AnalyticsPage(),
-                  // ),
-                  // GoRoute(
-                  //   path: 'budget',
-                  //   name: 'budget',
-                  //   builder: (context, state) => const BudgetPage(),
-                  // ),
-                  // GoRoute(
-                  //   path: 'profile',
-                  //   name: 'profile',
-                  //   builder: (context, state) => const ProfilePage(),
-                  // ),
+                  GoRoute(
+                    path: 'transactions',
+                    name: 'transactions',
+                    builder: (context, state) => const TransactionsPage(),
+                  ),
+                  GoRoute(
+                    path: 'analytics',
+                    name: 'analytics',
+                    builder: (context, state) => const AnalyticsPage(),
+                  ),
+                  GoRoute(
+                    path: 'budget',
+                    name: 'budget',
+                    builder: (context, state) => const BudgetPage(),
+                  ),
+                  GoRoute(
+                    path: 'profile',
+                    name: 'profile',
+                    builder: (context, state) => ProfilePage(authProvider:authProvider),
+                  ),
                 ],
               ),
             ],

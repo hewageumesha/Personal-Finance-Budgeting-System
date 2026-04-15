@@ -80,27 +80,27 @@ class RegistrationPage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          CustomTextField(
+          const CustomTextField(
             labelText: 'Email',
             hintText: 'Enter your email',
             keyboardType: TextInputType.emailAddress,
-            prefixIcon: const Icon(Icons.email, color: AppColors.primaryColor),
+            prefixIcon: Icon(Icons.email, color: AppColors.primaryColor),
           ),
           const SizedBox(height: 16.0),
-          CustomTextField(
+          const CustomTextField(
             labelText: 'Password',
             hintText: 'Create a password',
             obscureText: true,
-            prefixIcon: const Icon(Icons.lock, color: AppColors.primaryColor),
-            suffixIcon: const Icon(Icons.visibility, color: AppColors.grey600),
+            prefixIcon: Icon(Icons.lock, color: AppColors.primaryColor),
+            suffixIcon: Icon(Icons.visibility, color: AppColors.grey600),
           ),
           const SizedBox(height: 16.0),
-          CustomTextField(
+          const CustomTextField(
             labelText: 'Confirm Password',
             hintText: 'Re-enter your password',
             obscureText: true,
-            prefixIcon: const Icon(Icons.lock, color: AppColors.primaryColor),
-            suffixIcon: const Icon(Icons.visibility, color: AppColors.grey600),
+            prefixIcon: Icon(Icons.lock, color: AppColors.primaryColor),
+            suffixIcon: Icon(Icons.visibility, color: AppColors.grey600),
           ),
           const SizedBox(height: 24.0),
           CustomButton(
