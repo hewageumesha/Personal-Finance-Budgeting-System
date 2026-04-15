@@ -14,7 +14,7 @@ abstract class FinanceRepository {
 
   Future<void> addTransaction(TransactionEntity transaction);
 
-  Future<void> removeTransaction(TransactionEntity transaction);
+  Future<void> removeTransaction(String tid);
 
   // analytics
   Future<double> getTotalBalance(String uid);
