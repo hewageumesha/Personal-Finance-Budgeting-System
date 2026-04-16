@@ -4,7 +4,7 @@ enum CategoryType {
 }
 
 class CategoryEntity {
-  final int cid;
+  final String cid;
   final String cname;
   final CategoryType cType;
   final String userUid;

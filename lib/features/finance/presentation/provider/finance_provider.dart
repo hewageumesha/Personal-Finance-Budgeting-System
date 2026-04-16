@@ -31,15 +31,19 @@ class FinanceProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final results = await Future.wait([
+      final [trans,cats] = await Future.wait([
         _financeRepository.getTransactions(uid),
         _financeRepository.getCategories(uid)
       ]);
 
-      transactions = results as List<TransactionEntity>;
-      categories = results as List<CategoryEntity>;
+      // 🟢 The and MUST be here to "unpack" the results
+      transactions = trans as List<TransactionEntity>;
+      categories = cats as List<CategoryEntity>;
+
+
     } catch (e) {
       _errMessage = e.toString();
+      debugPrint("❌ FinanceProvider Error: $e");
     } finally {
       _isLoading = false;
       notifyListeners();

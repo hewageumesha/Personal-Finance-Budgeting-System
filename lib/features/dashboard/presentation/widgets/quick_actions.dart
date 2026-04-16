@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/styles/app_colors.dart';
+import 'add_transaction_bottom_sheet.dart';
 
 class QuickActions extends StatelessWidget {
   const QuickActions({super.key});
@@ -22,10 +23,10 @@ class QuickActions extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildActionButton(context, Icons.add, 'Add Income', () {
-              /* TODO: Navigate to Add Income */
+              _showTransactionSheet(context, false); // false == income
             }),
             _buildActionButton(context, Icons.remove, 'Add Expense', () {
-              /* TODO: Navigate to Add Expense */
+              _showTransactionSheet(context, true); // false == income // true == expense
             }),
             _buildActionButton(context, Icons.swap_horiz, 'Transfer', () {
               /* TODO: Navigate to Transfer */
@@ -62,5 +63,15 @@ class QuickActions extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _showTransactionSheet(BuildContext context, bool isExpense) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+            borderRadius:
+                BorderRadiusGeometry.vertical(top: Radius.circular(20))),
+        builder: (context) => AddTransactionBottomSheet(isExpense: isExpense));
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/data/repositories/auth_repository_Impl.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
 import 'package:personal_finance_budgeting_system/features/finance/data/repositories/finance_repository_impl.dart';
@@ -30,7 +31,6 @@ void main() async {
   }
 
   final authRepository = AuthRepositoryImpl();
-  final authProvider = AuthProviderr(authRepository);
 
   final financeLocalData = FinanceLocalData();
   final financeRepository =
@@ -41,17 +41,17 @@ void main() async {
       ChangeNotifierProvider(create: (_) => AuthProviderr(authRepository)),
       ChangeNotifierProvider(create: (_) => FinanceProvider(financeRepository))
     ],
-    child: MyApp(authProvider: authProvider),
+    child: const MyApp(),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final AuthProviderr authProvider;
-
-  const MyApp({super.key, required this.authProvider});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.read<AuthProviderr>();
+
     return MaterialApp.router(
       title: 'FinFlow',
       theme: AppTheme.lightTheme,

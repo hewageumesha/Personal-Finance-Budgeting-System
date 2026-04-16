@@ -51,7 +51,7 @@ class FinanceLocalData {
   Future<void> addLocalTransaction(TransactionModel transactionModel) async {
     try {
       final db = await _databaseHelper.db;
-      await db?.insert('categories', transactionModel.toMap());
+      await db?.insert('transactions', transactionModel.toMap());
     } catch (e) {
       // DataSource knows it's a DB problem
       throw Exception('Database issue $e');
@@ -61,7 +61,7 @@ class FinanceLocalData {
   Future<void> removeLocalTransaction(String tid) async {
     try {
       final db = await _databaseHelper.db;
-      await db?.delete('transaction', where: 'tid = ?', whereArgs: [tid]);
+      await db?.delete('transactions', where: 'tid = ?', whereArgs: [tid]);
     } catch (e) {
       // DataSource knows it's a DB problem
       throw Exception('Database issue $e');
@@ -73,7 +73,7 @@ class FinanceLocalData {
       final db = await _databaseHelper.db;
 
       final List<Map<String, dynamic>>? maps = await db?.query(
-        'transaction',
+        'transactions',
         where: 'user_uid = ?',
         whereArgs: [uid],
         orderBy: 'date DESC',

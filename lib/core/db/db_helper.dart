@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -24,8 +25,9 @@ class DatabaseHelper {
   }
 
   Future<void> _createDb(Database db, int version) async {
-    // users table
-    await db.execute('''
+    try {
+      // users table
+      await db.execute('''
       CREATE TABLE users(
         uid TEXT PRIMARY KEY,
         email TEXT NOT NULL,
@@ -34,8 +36,8 @@ class DatabaseHelper {
       )
     ''');
 
-    // category table
-    await db.execute('''
+      // category table
+      await db.execute('''
         CREATE TABLE categories(
           cid TEXT PRIMARY KEY,
           cname TEXT NOT NULL,
@@ -45,18 +47,21 @@ class DatabaseHelper {
         )
     ''');
 
-    // transaction table
-    await db.execute('''
-      CREATE TABLE transaction(
+      // transaction table
+      await db.execute('''
+      CREATE TABLE transactions(
         tid TEXT PRIMARY KEY,
         amount REAL not null,
         description text,
         date text not null,
         category_id TEXT NOT NULL, 
         user_uid TEXT NOT NULL,
-        FOREIGN KEY (category_id) REFERENCES categories (cid) ON DELETE CASCADE
+        FOREIGN KEY (category_id) REFERENCES categories (cid) ON DELETE CASCADE,
         FOREIGN KEY (user_uid) REFERENCES users (uid) ON DELETE CASCADE
       )
   ''');
+    } catch (e) {
+      print(e);
+    }
   }
 }

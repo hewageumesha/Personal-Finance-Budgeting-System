@@ -34,7 +34,7 @@ class FinanceRepositoryImpl implements FinanceRepository {
     try {
       return await financeLocalData.getLocalCategories(uid);
     } catch (e) {
-      throw Exception('Failed to fetch categories');
+      throw Exception('Failed to fetch categories $e');
     }
   }
 
@@ -44,7 +44,7 @@ class FinanceRepositoryImpl implements FinanceRepository {
       return await financeLocalData
           .addLocalTransaction(TransactionModel.fromEntity(transaction));
     } catch (e) {
-      throw Exception('Failed to fetch categories');
+      throw Exception('failed to add transaction');
     }
   }
 
@@ -53,7 +53,7 @@ class FinanceRepositoryImpl implements FinanceRepository {
     try {
       return await financeLocalData.getLocalTransactions(uid);
     } catch (e) {
-      throw Exception('Failed to fetch categories');
+      throw Exception('Failed to fetch transactions $e');
     }
   }
 
