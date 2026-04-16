@@ -16,9 +16,9 @@ import 'package:personal_finance_budgeting_system/features/authentication/presen
 class AppRouter {
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
   static final _shellNavigatorKey = GlobalKey<NavigatorState>();
+  static GoRouter? _routerInstance;
 
-  static GoRouter router(AuthProviderr authProvider) =>
-      GoRouter(
+  static GoRouter router(AuthProviderr authProvider) => _routerInstance ??= GoRouter(
         initialLocation: '/login',
         refreshListenable: authProvider,
         navigatorKey: _rootNavigatorKey,
@@ -42,7 +42,8 @@ class AppRouter {
               GoRoute(
                 path: '/dashboard',
                 name: 'dashboard',
-                builder: (context, state) => const DashboardPage(),
+                builder: (context, state) =>
+                    const DashboardPage(),
                 routes: [
                   GoRoute(
                     path: 'transactions',
@@ -62,7 +63,8 @@ class AppRouter {
                   GoRoute(
                     path: 'profile',
                     name: 'profile',
-                    builder: (context, state) => ProfilePage(authProvider:authProvider),
+                    builder: (context, state) =>
+                        ProfilePage(authProvider: authProvider),
                   ),
                 ],
               ),
@@ -72,26 +74,24 @@ class AppRouter {
         redirect: (context, state) {
           final loggedIn = authProvider.isAuthenticated;
           final loggingIn = state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register';
+              state.matchedLocation == '/register';
 
           // If not logged in, but trying to go to a protected route, redirect to login
           if (!loggedIn && !loggingIn) {
-          return '/login';
+            return '/login';
           }
           // If logged in, but trying to go to login/register, redirect to dashboard
           if (loggedIn && loggingIn) {
-          return '/dashboard';
+            return '/dashboard';
           }
 
           // No redirect needed
-          return
-          null;
+          return null;
         },
         // Add error handling for unknown routes
-        errorBuilder: (context, state) =>
-            Scaffold(
-              appBar: AppBar(title: const Text('Error')),
-              body: Center(child: Text('Page not found: ${state.error}')),
-            ),
+        errorBuilder: (context, state) => Scaffold(
+          appBar: AppBar(title: const Text('Error')),
+          body: Center(child: Text('Page not found: ${state.error}')),
+        ),
       );
 }
