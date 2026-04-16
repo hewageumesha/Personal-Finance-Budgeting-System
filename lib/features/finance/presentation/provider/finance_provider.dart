@@ -31,7 +31,7 @@ class FinanceProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final [trans,cats] = await Future.wait([
+      final [trans, cats] = await Future.wait([
         _financeRepository.getTransactions(uid),
         _financeRepository.getCategories(uid)
       ]);
@@ -39,11 +39,26 @@ class FinanceProvider extends ChangeNotifier {
       // 🟢 The and MUST be here to "unpack" the results
       transactions = trans as List<TransactionEntity>;
       categories = cats as List<CategoryEntity>;
-
-
     } catch (e) {
       _errMessage = e.toString();
       debugPrint("❌ FinanceProvider Error: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> addTransaction(TransactionEntity transaction) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _financeRepository.addTransaction(transaction);
+
+      // refresh
+      await loadFinanceData(transaction.userUid);
+    } catch (e) {
+      _errMessage = e.toString();
+      debugPrint("❌ Something wrong with adding transaction $e");
     } finally {
       _isLoading = false;
       notifyListeners();

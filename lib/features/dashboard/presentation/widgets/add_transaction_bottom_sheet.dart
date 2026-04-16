@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
+import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import 'package:provider/provider.dart';
 
+// check Quick actions this widget relate to it
 class AddTransactionBottomSheet extends StatefulWidget {
   bool isExpense;
 
@@ -21,6 +24,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
   Widget build(BuildContext context) {
     final financeProvider = context.watch<FinanceProvider>();
     final themeColor = widget.isExpense ? Colors.red : Colors.green;
+    final uid = context.read<AuthProviderr>().user?.uid;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -117,12 +121,25 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-                onPressed: () => {},
-                child: const Text(
-                  'Save Transaction',
-                  style: TextStyle(color: Colors.white) ,
-                ),),
+              onPressed: () {
+                final tx = TransactionEntity(
+                    tid: DateTime.now().millisecondsSinceEpoch.toString(),
+                    amount: double.parse(_amountController.text) *
+                        (widget.isExpense ? -1 : 1),
+                    cid: _selectedCategoryId.toString(),
+                    date: DateTime.now(),
+                    description: _descriptionController.text,
+                    userUid: uid as String);
 
+                financeProvider.addTransaction(tx);
+
+                Navigator.pop(context);
+              },
+              child: const Text(
+                'Save Transaction',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
           )
         ],
       ),
