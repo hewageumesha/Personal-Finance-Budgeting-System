@@ -67,8 +67,11 @@ class FinanceRepositoryImpl implements FinanceRepository {
   }
 
   @override
-  Future<double> getTotalBalance(String uid) {
-    // TODO: implement getTotalBalance
-    throw UnimplementedError();
+  Future<double> getTotalBalance(String uid) async {
+    try {
+      return await financeLocalData.getLocalTotalBalance(uid);
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

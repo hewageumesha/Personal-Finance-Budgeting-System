@@ -123,7 +123,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
             child: ElevatedButton(
               onPressed: () {
                 final tx = TransactionEntity(
-                    tid: DateTime.now().millisecondsSinceEpoch.toString(),
+                    tid: 'tx${DateTime.now().millisecondsSinceEpoch.toString()}',
                     amount: double.parse(_amountController.text) *
                         (widget.isExpense ? -1 : 1),
                     cid: _selectedCategoryId.toString(),

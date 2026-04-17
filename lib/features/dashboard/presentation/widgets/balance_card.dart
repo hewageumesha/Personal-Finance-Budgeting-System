@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import '../../../../shared/styles/app_colors.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ class BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provide = context.watch<FinanceProvider>();
+
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -41,7 +43,7 @@ class BalanceCard extends StatelessWidget {
             ),
             const SizedBox(height: 10.0),
             Text(
-              '\$12,345.67',
+              '\$${provide.totalBalance?.toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: AppColors.onPrimaryColor,
                     fontWeight: FontWeight.bold,
