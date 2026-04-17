@@ -55,6 +55,8 @@ class FinanceProvider extends ChangeNotifier {
       _totalBalance = balance as double;
       _income = income as double;
       _expense = expense as double;
+
+      print(transactions);
     } catch (e) {
       _errMessage = e.toString();
       debugPrint("❌ FinanceProvider Error: $e");

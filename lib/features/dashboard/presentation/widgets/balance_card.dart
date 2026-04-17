@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import '../../../../shared/styles/app_colors.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +56,7 @@ class BalanceCard extends StatelessWidget {
                 _buildBalanceDetail(context, 'Income','\$${provide.income} ',
                     Icons.arrow_upward),
                 _buildBalanceDetail(context, 'Expenses',
-                    '\$${provide.expense}', Icons.arrow_downward),
+                    '- \$${provide.expense}', Icons.arrow_downward),
               ],
             ),
           ],
