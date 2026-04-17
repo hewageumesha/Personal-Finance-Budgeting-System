@@ -74,4 +74,22 @@ class FinanceRepositoryImpl implements FinanceRepository {
       throw Exception(e);
     }
   }
+
+  @override
+  Future<double> getExpenseTotal(String uid) async {
+    try {
+      return await financeLocalData.getLocalExpenseTotal(uid);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<double> getIncomeTotal(String uid) async {
+    try {
+      return await financeLocalData.getLocalIncomeTotal(uid);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

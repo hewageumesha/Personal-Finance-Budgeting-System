@@ -12,6 +12,8 @@ class FinanceProvider extends ChangeNotifier {
   List<TransactionEntity> transactions = [];
   List<CategoryEntity> categories = [];
   double? _totalBalance;
+  double _income = 0.0;
+  double _expense = 0.0;
   String? _errMessage;
   bool _isLoading = false;
 
@@ -29,21 +31,30 @@ class FinanceProvider extends ChangeNotifier {
 
   double? get totalBalance => _totalBalance;
 
+  double get income => _income;
+
+  double get expense => _expense;
+
+  // Methods
   Future<void> loadFinanceData(String uid) async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      final [trans, cats, balance] = await Future.wait([
+      final [trans, cats, balance, income, expense] = await Future.wait([
         _financeRepository.getTransactions(uid),
         _financeRepository.getCategories(uid),
         _financeRepository.getTotalBalance(uid),
+        _financeRepository.getIncomeTotal(uid),
+        _financeRepository.getExpenseTotal(uid),
       ]);
 
       // 🟢 The and MUST be here to "unpack" the results
       transactions = trans as List<TransactionEntity>;
       categories = cats as List<CategoryEntity>;
       _totalBalance = balance as double;
+      _income = income as double;
+      _expense = expense as double;
     } catch (e) {
       _errMessage = e.toString();
       debugPrint("❌ FinanceProvider Error: $e");

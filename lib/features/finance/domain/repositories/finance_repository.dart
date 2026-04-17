@@ -18,4 +18,8 @@ abstract class FinanceRepository {
 
   // analytics
   Future<double> getTotalBalance(String uid);
+
+  Future<double> getIncomeTotal(String uid);
+
+  Future<double> getExpenseTotal(String uid);
 }

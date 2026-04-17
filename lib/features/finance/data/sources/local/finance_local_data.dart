@@ -110,4 +110,47 @@ class FinanceLocalData {
       throw Exception('Failed to retrieve total balance $e');
     }
   }
+
+  Future<double> getLocalExpenseTotal(String uid) async {
+    try {
+      final db = await _databaseHelper.db;
+
+      String sql = '''
+        SELECT SUM(amount) as expense from transactions where user_uid = ? and amount < 0
+      ''';
+      final List<Map<String, dynamic>>? result = await db?.rawQuery(sql, [uid]);
+
+      if (result != null &&
+          result.isNotEmpty &&
+          result.first['expense'] != null) {
+        return (result.first['expense'].toDouble()).abs();
+      }
+
+      return 0.0;
+    } catch (e) {
+      throw Exception('failed to get total expenses $e');
+    }
+  }
+
+  Future<double> getLocalIncomeTotal(String uid) async {
+    try {
+      final db = await _databaseHelper.db;
+
+      String sql = '''
+        SELECT SUM(amount) as income from transactions where user_uid = ? and amount > 0
+      ''';
+      final List<Map<String, dynamic>>? result = await db?.rawQuery(sql, [uid]);
+
+      if (result != null &&
+          result.isNotEmpty &&
+          result.first['income'] != null) {
+        return result.first['income'].toDouble();
+      }
+
+      return 0.0;
+    } catch (e) {
+      throw Exception('failed to get total income $e');
+    }
+  }
+
 }

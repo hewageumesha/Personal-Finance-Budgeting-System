@@ -54,10 +54,10 @@ class BalanceCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildBalanceDetail(
-                    context, 'Income', '\$5,000.00', Icons.arrow_upward),
-                _buildBalanceDetail(
-                    context, 'Expenses', '\$2,500.00', Icons.arrow_downward),
+                _buildBalanceDetail(context, 'Income','\$${provide.income} ',
+                    Icons.arrow_upward),
+                _buildBalanceDetail(context, 'Expenses',
+                    '\$${provide.expense}', Icons.arrow_downward),
               ],
             ),
           ],
