@@ -73,12 +73,21 @@ class FinanceLocalData {
     try {
       final db = await _databaseHelper.db;
 
-      final List<Map<String, dynamic>>? maps = await db?.query(
-        'transactions',
-        where: 'user_uid = ?',
-        whereArgs: [uid],
-        orderBy: 'date DESC',
-      );
+      // old Query One
+      // final List<Map<String, dynamic>>? maps = await db?.query(
+      //   'transactions',
+      //   where: 'user_uid = ?',
+      //   whereArgs: [uid],
+      //   orderBy: 'date DESC',
+      // );
+
+      final List<Map<String, dynamic>>? maps = await db?.rawQuery('''
+        SELECT t.*, c.cname as categoryName 
+        FROM transactions t
+        INNER JOIN categories c on t.category_id = c.cid
+        WHERE t.user_uid = ?
+        ORDER BY t.date DESC
+      ''', [uid]);
 
       List<TransactionModel> list = List.generate(maps!.length, (i) {
         return TransactionModel.fromMap(maps[i]);
@@ -152,5 +161,4 @@ class FinanceLocalData {
       throw Exception('failed to get total income $e');
     }
   }
-
 }

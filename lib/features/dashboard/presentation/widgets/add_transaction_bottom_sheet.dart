@@ -18,6 +18,7 @@ class AddTransactionBottomSheet extends StatefulWidget {
 class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _titleController = TextEditingController();
   String? _selectedCategoryId;
 
   @override
@@ -61,6 +62,22 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
                   OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             ),
           ),
+
+          const SizedBox(
+            height: 20,
+          ),
+
+          // Description
+          TextField(
+            controller: _titleController,
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+                prefixIcon: Icon(Icons.label_outline, color: themeColor),
+                labelText: "Title",
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12))),
+          ),
+
           const SizedBox(
             height: 20,
           ),
@@ -123,13 +140,15 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
             child: ElevatedButton(
               onPressed: () {
                 final tx = TransactionEntity(
-                    tid: 'tx${DateTime.now().millisecondsSinceEpoch.toString()}',
+                    tid:
+                        'tx${DateTime.now().millisecondsSinceEpoch.toString()}',
                     amount: double.parse(_amountController.text) *
                         (widget.isExpense ? -1 : 1),
                     cid: _selectedCategoryId.toString(),
                     date: DateTime.now(),
                     description: _descriptionController.text,
-                    userUid: uid as String);
+                    userUid: uid as String,
+                    title: _titleController.text);
 
                 financeProvider.addTransaction(tx);
 

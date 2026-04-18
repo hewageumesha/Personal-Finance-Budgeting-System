@@ -9,7 +9,9 @@ class TransactionModel extends TransactionEntity {
       required super.date,
       required super.description,
       required super.cid,
-      required super.userUid});
+      required super.userUid,
+      required super.title,
+      super.categoryName});
 
   // fromEntity
   factory TransactionModel.fromEntity(TransactionEntity entity) {
@@ -19,7 +21,9 @@ class TransactionModel extends TransactionEntity {
         date: entity.date,
         description: entity.description,
         cid: entity.cid,
-        userUid: entity.userUid);
+        userUid: entity.userUid,
+        title: entity.title,
+        categoryName: entity.categoryName);
   }
 
   // fetch from db
@@ -30,7 +34,9 @@ class TransactionModel extends TransactionEntity {
         date: DateTime.parse(map['date']),
         description: map['description'],
         cid: map['category_id'],
-        userUid: map['user_uid']);
+        userUid: map['user_uid'],
+        title: map['title'],
+        categoryName: map['categoryName']);
   }
 
   // convert category to map , for database operations
@@ -38,6 +44,7 @@ class TransactionModel extends TransactionEntity {
     return {
       'tid': tid,
       'amount': amount,
+      'title': title,
       'date': date.toIso8601String(),
       'description': description,
       'category_id': cid,

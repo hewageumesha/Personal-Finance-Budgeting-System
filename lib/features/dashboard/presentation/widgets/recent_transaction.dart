@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart';
+import 'package:personal_finance_budgeting_system/core/utils/category_icon_helper.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/styles/app_colors.dart';
@@ -10,12 +11,13 @@ class RecentTransaction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final provider = context.watch<FinanceProvider>();
-    final transactions =provider.transactions;
+    final transactions = provider.transactions;
 
-    if(transactions.isEmpty) {
-      return const Center(child: Text("No Transactions yet Today"),);
+    if (transactions.isEmpty) {
+      return const Center(
+        child: Text("No Transactions yet Today"),
+      );
     }
 
     return Column(
@@ -35,7 +37,6 @@ class RecentTransaction extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: transactions.length > 5 ? 5 : transactions.length,
           itemBuilder: (context, index) {
-
             final tx = transactions[index];
             final isExpense = tx.amount < 0;
 
@@ -56,10 +57,14 @@ class RecentTransaction extends StatelessWidget {
 
                 // Icon in the recent transaction
                 leading: CircleAvatar(
-                  backgroundColor: AppColors.primaryColor.withOpacity(0.1),
-                  child: Icon(Icons.receipt_long, color: AppColors.primaryColor),
+                  backgroundColor:
+                      CategoryIconHelper.getIconColor(tx.categoryName),
+                  child: Icon(
+                    // 🟢 Use the utility class helper to get the icon based on category
+                    CategoryIconHelper.getIcon(tx.categoryName ?? ''),
+                    color: AppColors.primaryColor,
+                  ),
                 ),
-
 
                 // title: Text(index % 2 == 0 ? 'Groceries' : 'Dinner Out',
                 //     style: Theme.of(context)
@@ -67,15 +72,14 @@ class RecentTransaction extends StatelessWidget {
                 //         .titleMedium
                 //         ?.copyWith(fontWeight: FontWeight.bold)),
 
-                title: Text(tx.description ?? "Transaction", style: const TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(tx.title ?? "Transaction",
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
 
-                subtitle: Text(index % 2 == 0 ? 'Food & Drinks' : 'Dining',
+                subtitle: Text('${tx.categoryName}',
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
                         ?.copyWith(color: AppColors.grey600)),
-
-
 
                 // trailing: Text(
                 //   index % 2 == 0 ? '-\$55.00' : '-\$30.00',
@@ -91,10 +95,9 @@ class RecentTransaction extends StatelessWidget {
                   // 🟢 UX: Formatting with minus/plus and colors
                   "${isExpense ? '-' : '+'}\$${tx.amount.abs().toStringAsFixed(2)}",
                   style: TextStyle(
-                    color: isExpense ? AppColors.errorColor : Colors.green,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16
-                  ),
+                      color: isExpense ? AppColors.errorColor : Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
                 ),
 
                 onTap: () {

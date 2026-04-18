@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -20,6 +19,7 @@ class DatabaseHelper {
 
   Future<Database> initDatabase() async {
     String path = join(await getDatabasesPath(), 'finflow.db');
+
     // callback func , passing a function
     return await openDatabase(path, version: 1, onCreate: _createDb);
   }
@@ -52,6 +52,7 @@ class DatabaseHelper {
       CREATE TABLE transactions(
         tid TEXT PRIMARY KEY,
         amount REAL not null,
+        title text not null,
         description text,
         date text not null,
         category_id TEXT NOT NULL, 

@@ -9,6 +9,9 @@ abstract class FinanceRepository {
 
   Future<void> removeCategory(String categoryId);
 
+
+
+
   // transaction related methods
   Future<List<TransactionEntity>> getTransactions(String uid);
 
