@@ -1,5 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../core/utils/category_icon_helper.dart';
+import '../../../authentication/presentation/providers/auth_provider.dart';
 
 class TransactionsPage extends StatefulWidget {
   const TransactionsPage({super.key});
@@ -9,41 +15,37 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
-  String _selectedFilter = 'All';
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final uid = context.read<AuthProviderr>().user?.uid;
 
-  final List<Map<String, dynamic>> _transactions = [
-    {'name': 'Groceries', 'category': 'Food', 'amount': -55.00, 'date': '2024-03-10', 'type': 'expense'},
-    {'name': 'Salary', 'category': 'Income', 'amount': 2500.00, 'date': '2024-03-09', 'type': 'income'},
-    {'name': 'Coffee', 'category': 'Food', 'amount': -4.50, 'date': '2024-03-09', 'type': 'expense'},
-    {'name': 'Rent', 'category': 'Housing', 'amount': -1200.00, 'date': '2024-03-05', 'type': 'expense'},
-    {'name': 'Freelance Work', 'category': 'Income', 'amount': 800.00, 'date': '2024-03-03', 'type': 'income'},
-    {'name': 'Books', 'category': 'Education', 'amount': -30.00, 'date': '2024-03-02', 'type': 'expense'},
-    {'name': 'Utilities', 'category': 'Bills', 'amount': -75.00, 'date': '2024-03-01', 'type': 'expense'},
-    {'name': 'Bonus', 'category': 'Income', 'amount': 1000.00, 'date': '2024-02-28', 'type': 'income'},
-  ];
-
-  List<Map<String, dynamic>> get _filteredTransactions {
-    if (_selectedFilter == 'All') {
-      return _transactions;
-    } else if (_selectedFilter == 'Income') {
-      return _transactions.where((t) => t['type'] == 'income').toList();
-    } else {
-      return _transactions.where((t) => t['type'] == 'expense').toList();
-    }
+        context
+            .read<FinanceProvider>()
+            .changeFilter(TransactionFilter.all, uid!);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<FinanceProvider>();
+    final transations = provider.getFilteredTransactions;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transactions'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () { /* TODO: Navigate to Add Transaction Page */ },
-            tooltip: 'Add New Transaction',
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.add_circle_outline),
+        //     onPressed: () {
+        //
+        //    },
+        //     tooltip: 'Add New Transaction',
+        //   ),
+        // ],
       ),
       body: Column(
         children: [
@@ -52,14 +54,17 @@ class _TransactionsPageState extends State<TransactionsPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildFilterChip('All'),
-                _buildFilterChip('Income'),
-                _buildFilterChip('Expenses'),
+                _buildFilterChip(
+                    context, 'All', TransactionFilter.all, provider),
+                _buildFilterChip(
+                    context, 'Income', TransactionFilter.income, provider),
+                _buildFilterChip(
+                    context, 'Expense', TransactionFilter.expense, provider),
               ],
             ),
           ),
           Expanded(
-            child: _filteredTransactions.isEmpty
+            child: transations.isEmpty
                 ? Center(
                     child: Text(
                       'No transactions found for this filter.',
@@ -67,32 +72,51 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     ),
                   )
                 : ListView.builder(
-                    itemCount: _filteredTransactions.length,
+                    itemCount: transations.length,
                     itemBuilder: (context, index) {
-                      final transaction = _filteredTransactions[index];
-                      final isExpense = transaction['type'] == 'expense';
+                      final tx = transations[index];
+                      final isExpense = tx.amount < 0;
+
                       return Card(
-                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
                         elevation: 4,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: isExpense ? AppColors.errorColor.withOpacity(0.1) : AppColors.successColor.withOpacity(0.1),
+                            backgroundColor: CategoryIconHelper.getIconColor(
+                                    tx.categoryName ?? '')
+                                .withOpacity(0.1),
                             child: Icon(
-                              isExpense ? Icons.arrow_downward : Icons.arrow_upward,
-                              color: isExpense ? AppColors.errorColor : AppColors.successColor,
+                              CategoryIconHelper.getIcon(tx.categoryName ?? ''),
+                              color: CategoryIconHelper.getIconColor(
+                                  tx.categoryName),
                             ),
                           ),
-                          title: Text(transaction['name'], style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                          subtitle: Text('${transaction['category']} - ${transaction['date']}', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.grey600)),
+                          title: Text(tx.title,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text('${tx.categoryName} - ${tx.date}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: AppColors.grey600)),
                           trailing: Text(
-                            '${isExpense ? '-' : '+'}\$${transaction['amount'].abs().toStringAsFixed(2)}',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: isExpense ? AppColors.errorColor : AppColors.successColor,
+                            '${isExpense ? '-' : '+'}\$${tx.amount.abs().toStringAsFixed(2)}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  color: isExpense
+                                      ? AppColors.errorColor
+                                      : AppColors.successColor,
                                   fontWeight: FontWeight.bold,
                                 ),
                           ),
-                          onTap: () { /* TODO: Navigate to transaction detail */ },
+                          onTap: () {
+                            /* TODO: Navigate to transaction detail */
+                          },
                         ),
                       );
                     },
@@ -103,20 +127,24 @@ class _TransactionsPageState extends State<TransactionsPage> {
     );
   }
 
-  Widget _buildFilterChip(String label) {
+  Widget _buildFilterChip(BuildContext context, String label,
+      TransactionFilter filter, FinanceProvider provider) {
+    final isSelected = provider.transactionFilter == filter;
+    final uid = context.watch<AuthProviderr>().user!.uid;
+
     return FilterChip(
       label: Text(label),
-      selected: _selectedFilter == label,
+      selected: isSelected,
       onSelected: (bool selected) {
-        setState(() {
-          _selectedFilter = label;
-        });
+        provider.changeFilter(filter, uid);
       },
       selectedColor: AppColors.primaryColor.withOpacity(0.2),
       checkmarkColor: AppColors.primaryColor,
-      labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: _selectedFilter == label ? AppColors.primaryColor : AppColors.onBackgroundColor,
-          ),
+      labelStyle: TextStyle(
+        color:
+            isSelected ? AppColors.primaryColor : AppColors.onBackgroundColor,
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      ),
       side: BorderSide(color: AppColors.primaryColor.withOpacity(0.5)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );

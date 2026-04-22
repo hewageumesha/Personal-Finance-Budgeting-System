@@ -2,6 +2,7 @@ import 'package:personal_finance_budgeting_system/features/finance/data/model/tr
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/category_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/repositories/finance_repository.dart';
+import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import '../model/category_model.dart';
 import '../sources/local/finance_local_data.dart';
 
@@ -88,6 +89,16 @@ class FinanceRepositoryImpl implements FinanceRepository {
   Future<double> getIncomeTotal(String uid) async {
     try {
       return await financeLocalData.getLocalIncomeTotal(uid);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<List<TransactionEntity>> getFilteredTransactions(String filter,
+      String uid) async {
+    try {
+      return await financeLocalData.getFilteredTransactions(uid, filter);
     } catch (e) {
       throw Exception(e);
     }

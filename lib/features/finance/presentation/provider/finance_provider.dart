@@ -3,14 +3,17 @@ import 'package:personal_finance_budgeting_system/features/authentication/presen
 import 'package:personal_finance_budgeting_system/features/finance/data/repositories/finance_repository_impl.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/category_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
-
 import '../../domain/repositories/finance_repository.dart';
 
 class FinanceProvider extends ChangeNotifier {
   final FinanceRepository _financeRepository;
 
+  TransactionFilter _selectedFilter = TransactionFilter.all;
+
+
   List<TransactionEntity> transactions = [];
   List<CategoryEntity> categories = [];
+  List<TransactionEntity> _filteredTransactions = [];
   double? _totalBalance;
   double _income = 0.0;
   double _expense = 0.0;
@@ -34,6 +37,10 @@ class FinanceProvider extends ChangeNotifier {
   double get income => _income;
 
   double get expense => _expense;
+
+  TransactionFilter get transactionFilter => _selectedFilter;
+
+  List<TransactionEntity> get getFilteredTransactions => _filteredTransactions;
 
   // Methods
   Future<void> loadFinanceData(String uid) async {
@@ -82,4 +89,24 @@ class FinanceProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> changeFilter(TransactionFilter filter, String uid) async{
+    _selectedFilter = filter;
+    String filterType = filter.name;
+    try{
+      _filteredTransactions = await _financeRepository.getFilteredTransactions(filterType, uid);
+      notifyListeners();
+    }catch(e){
+      debugPrint("❌ something wrong with getting filtered transactions $e");
+    }
+
+  }
+
+}
+
+
+enum TransactionFilter {
+  all,
+  income,
+  expense
 }

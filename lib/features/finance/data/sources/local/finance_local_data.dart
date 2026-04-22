@@ -161,4 +161,32 @@ class FinanceLocalData {
       throw Exception('failed to get total income $e');
     }
   }
+
+  // get filtered transactions data
+  Future<List<TransactionModel>> getFilteredTransactions(String uid,String filterType) async {
+    try{
+      final db = await _databaseHelper.db;
+
+      String condition = "";
+      if(filterType == "income"){
+        condition = "AND t.amount > 0";
+      }else if(filterType == "expense"){
+        condition = "AND t.amount < 0";
+      }
+
+      String sql = '''
+        SELECT t.*, c.cname as categoryName 
+        FROM transactions t
+        INNER JOIN categories c ON t.category_id = c.cid
+        WHERE t.user_uid = ? $condition
+      ''';
+
+      final List<Map<String,dynamic>>? maps = await db?.rawQuery(sql,[uid]);
+
+      return maps!.map((m) => TransactionModel.fromMap(m)).toList();
+
+    }catch(e){
+      throw Exception('database issue $e ❌');
+    }
+  }
 }
