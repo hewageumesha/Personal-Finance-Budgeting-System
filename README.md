@@ -137,7 +137,7 @@ lib/
 ## ⚙️ Installation
 
 ```bash
-# Clone the repository
+# Clone the repositories
 git clone https://github.com/yourusername/finance-budget-app.git
 
 # Navigate to the project folder

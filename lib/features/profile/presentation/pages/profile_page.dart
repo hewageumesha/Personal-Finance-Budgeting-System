@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:personal_finance_budgeting_system/routes/app_router.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
+import '../../../authentication/presentation/providers/auth_provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({super.key , required  this.authProvider });
+
+  final AuthProviderr authProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class ProfilePage extends StatelessWidget {
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  AuthService.logout();
+                  authProvider.loginOut();
                   GoRouter.of(context).go('/login');
                 },
                 icon: const Icon(Icons.logout, color: AppColors.onPrimaryColor),
