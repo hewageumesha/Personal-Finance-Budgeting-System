@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
@@ -32,7 +31,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<FinanceProvider>();
-    final transations = provider.getFilteredTransactions;
+    final transactions = provider.getFilteredTransactions;
 
     return Scaffold(
       appBar: AppBar(
@@ -64,7 +63,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             ),
           ),
           Expanded(
-            child: transations.isEmpty
+            child: transactions.isEmpty
                 ? Center(
                     child: Text(
                       'No transactions found for this filter.',
@@ -72,9 +71,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     ),
                   )
                 : ListView.builder(
-                    itemCount: transations.length,
+                    itemCount: transactions.length,
                     itemBuilder: (context, index) {
-                      final tx = transations[index];
+                      final tx = transactions[index];
                       final isExpense = tx.amount < 0;
 
                       return Card(
