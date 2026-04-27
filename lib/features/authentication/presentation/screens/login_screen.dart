@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:personal_finance_budgeting_system/routes/app_router.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/custom_button.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/custom_text_field.dart';
 import 'package:personal_finance_budgeting_system/shared/widgets/finflow_logo.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +52,10 @@ class LoginPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Spacer(flex: 2),
-                  const FinFlowLogo(textColor: AppColors.onPrimaryColor, iconSize: 60, textSize: 48),
+                  const FinFlowLogo(
+                      textColor: AppColors.onPrimaryColor,
+                      iconSize: 60,
+                      textSize: 48),
                   const SizedBox(height: 24.0),
                   Text(
                     'Welcome Back!',
@@ -82,6 +101,7 @@ class LoginPage extends StatelessWidget {
       child: Column(
         children: [
           CustomTextField(
+            controller: _emailController,
             labelText: 'Email',
             hintText: 'Enter your email',
             keyboardType: TextInputType.emailAddress,
@@ -89,6 +109,7 @@ class LoginPage extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           CustomTextField(
+            controller: _passwordController,
             labelText: 'Password',
             hintText: 'Enter your password',
             obscureText: true,
@@ -98,10 +119,18 @@ class LoginPage extends StatelessWidget {
           const SizedBox(height: 24.0),
           CustomButton(
             text: 'Login',
-            onPressed: () {
-              // Simulate login
-              AuthService.login();
-              GoRouter.of(context).go('/dashboard');
+            onPressed: () async {
+              try {
+                await context.read<AuthProviderr>().signIn(
+                    _emailController.text.trim(), _passwordController.text);
+
+                if (context.mounted) {
+                  context.go('/dashboard');
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(e.toString())));
+              }
             },
             backgroundColor: AppColors.primaryColor,
             textColor: AppColors.onPrimaryColor,
