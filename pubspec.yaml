@@ -47,6 +47,10 @@ dependencies:
   path: ^1.9.1
   firebase_core: ^4.5.0
   firebase_auth: ^6.3.0
+  csv: ^8.0.0
+  path_provider: ^2.1.5
+  file_picker: ^11.0.2
+
 
 dev_dependencies:
   flutter_test:

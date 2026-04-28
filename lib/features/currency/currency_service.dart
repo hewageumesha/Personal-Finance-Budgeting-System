@@ -10,13 +10,16 @@ class CurrencyService {
       final url = Uri.parse('https://open.er-api.com/v6/latest/USD');
       final response = await http.get(url);
 
+
       // 2. Check if the internet call was successful (Code 200 means OK)
       if (response.statusCode == 200) {
         // 3. Decode the JSON data the server sent us
         final decodedData = json.decode(response.body);
 
-        // 4. Extract just the LKR (Sri Lankan Rupee) rate from the giant list
+        // 4. Extract just the USD (Sri Lankan Rupee) rate from the giant list
         final lkrRate = decodedData['rates']['LKR'];
+
+        print('Lkr rate $lkrRate');
 
         // Convert it to a double (decimal number) and return it
         return lkrRate.toDouble();

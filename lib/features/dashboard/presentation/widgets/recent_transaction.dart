@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart';
+import 'package:personal_finance_budgeting_system/core/utils/string_utils.dart';
 import 'package:personal_finance_budgeting_system/core/utils/category_icon_helper.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
+import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../../shared/styles/app_colors.dart';
 
@@ -12,13 +14,17 @@ class RecentTransaction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<FinanceProvider>();
+    final settingProvider = context.watch<SettingProvider>();
     final transactions = provider.transactions;
+
 
     if (transactions.isEmpty) {
       return const Center(
         child: Text("No Transactions yet Today"),
       );
     }
+
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,6 +46,8 @@ class RecentTransaction extends StatelessWidget {
             final tx = transactions[index];
             final isExpense = tx.amount < 0;
 
+            final double displayAmount = settingProvider.selectedCurrency == AppCurrency.USD ? tx.amount.abs() / settingProvider.exchangeRate : tx.amount.abs();
+
             return Card(
               margin: const EdgeInsets.only(bottom: 10),
               elevation: 4,
@@ -48,13 +56,6 @@ class RecentTransaction extends StatelessWidget {
 
               // list Tile
               child: ListTile(
-                // leading: CircleAvatar(
-                //   backgroundColor: AppColors.primaryColor.withOpacity(0.1),
-                //   child: Icon(
-                //       index % 2 == 0 ? Icons.shopping_cart : Icons.restaurant,
-                //       color: AppColors.primaryColor),
-                // ),
-
                 // Icon in the recent transaction
                 leading: CircleAvatar(
                   backgroundColor:
@@ -65,14 +66,7 @@ class RecentTransaction extends StatelessWidget {
                     color: AppColors.primaryColor,
                   ),
                 ),
-
-                // title: Text(index % 2 == 0 ? 'Groceries' : 'Dinner Out',
-                //     style: Theme.of(context)
-                //         .textTheme
-                //         .titleMedium
-                //         ?.copyWith(fontWeight: FontWeight.bold)),
-
-                title: Text(tx.title ?? "Transaction",
+                title: Text(StringUtils.capitalizeWords(tx.title) ?? "Transaction",
                     style: const TextStyle(fontWeight: FontWeight.bold)),
 
                 subtitle: Text('${tx.categoryName}',
@@ -81,19 +75,9 @@ class RecentTransaction extends StatelessWidget {
                         .bodySmall
                         ?.copyWith(color: AppColors.grey600)),
 
-                // trailing: Text(
-                //   index % 2 == 0 ? '-\$55.00' : '-\$30.00',
-                //   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                //         color: index % 2 == 0
-                //             ? AppColors.errorColor
-                //             : AppColors.errorColor,
-                //         fontWeight: FontWeight.bold,
-                //       ),
-                // ),
-
                 trailing: Text(
                   // 🟢 UX: Formatting with minus/plus and colors
-                  "${isExpense ? '-' : '+'}\$${tx.amount.abs().toStringAsFixed(2)}",
+                  "${isExpense ? '-' : '+'} ${settingProvider.currencySymbol}${displayAmount.toStringAsFixed(2)}",
                   style: TextStyle(
                       color: isExpense ? AppColors.errorColor : Colors.green,
                       fontWeight: FontWeight.bold,

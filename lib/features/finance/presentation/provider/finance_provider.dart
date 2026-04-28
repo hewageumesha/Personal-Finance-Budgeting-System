@@ -1,15 +1,21 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:personal_finance_budgeting_system/core/utils/csv_helper.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
 import 'package:personal_finance_budgeting_system/features/finance/data/repositories/finance_repository_impl.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/category_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
+import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import '../../domain/repositories/finance_repository.dart';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 class FinanceProvider extends ChangeNotifier {
   final FinanceRepository _financeRepository;
 
   TransactionFilter _selectedFilter = TransactionFilter.all;
-
 
   List<TransactionEntity> transactions = [];
   List<CategoryEntity> categories = [];
@@ -73,11 +79,21 @@ class FinanceProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> addTransaction(TransactionEntity transaction) async {
+  Future<void> addTransaction(
+      TransactionEntity transaction, SettingProvider settings) async {
     _isLoading = true;
     notifyListeners();
+
     try {
-      await _financeRepository.addTransaction(transaction);
+      double amountLkr = transaction.amount;
+
+      if (settings.selectedCurrency == AppCurrency.USD) {
+        amountLkr = transaction.amount * settings.exchangeRate;
+      }
+
+      final normalizedTransaction = transaction.copyWith(amount: amountLkr);
+
+      await _financeRepository.addTransaction(normalizedTransaction);
 
       // refresh
       await loadFinanceData(transaction.userUid);
@@ -90,23 +106,76 @@ class FinanceProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> changeFilter(TransactionFilter filter, String uid) async{
+  Future<void> changeFilter(TransactionFilter filter, String uid) async {
     _selectedFilter = filter;
     String filterType = filter.name;
-    try{
-      _filteredTransactions = await _financeRepository.getFilteredTransactions(filterType, uid);
+    try {
+      _filteredTransactions =
+          await _financeRepository.getFilteredTransactions(filterType, uid);
       notifyListeners();
-    }catch(e){
+    } catch (e) {
       debugPrint("❌ something wrong with getting filtered transactions $e");
     }
-
   }
 
-}
+  Future<void> exportTransactionsToCsv() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final csvData = CsvHelper.generateFianceSummary(
+          totalBalance: _totalBalance ?? 0.0,
+          totalIncome: _income,
+          totalExpense: _expense,
+          transactions: transactions,
+          categories: categories);
 
 
-enum TransactionFilter {
-  all,
-  income,
-  expense
+
+      String? outputFile = await  FilePicker.saveFile(
+        dialogTitle: 'Save your Financial Report',
+        fileName: 'finance_report_${DateTime.now().millisecondsSinceEpoch}.csv',
+        type: FileType.custom,
+        bytes: utf8.encode(csvData),
+        allowedExtensions: ['csv'],
+      );
+
+      if (outputFile != null) {
+        final file = File(outputFile);
+        await file.writeAsString(csvData);
+
+        // 🟢 Success Feedback
+        debugPrint("✅ File saved to: $outputFile");
+      }
+      // await file.writeAsString(csvData);
+
+    } catch (e) {
+      debugPrint("❌ CSV Export Error: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // check later
+  double getDisplayTotalBalance(SettingProvider settings) {
+    if (_totalBalance == null) return 0.0;
+    return settings.selectedCurrency == AppCurrency.USD
+        ? _totalBalance! / settings.exchangeRate
+        : _totalBalance!;
+  }
+
+  double getDisplayIncome(SettingProvider settings) {
+    return settings.selectedCurrency == AppCurrency.USD
+        ? _income / settings.exchangeRate
+        : _income;
+  }
+
+  double getDisplayExpense(SettingProvider settings) {
+    return settings.selectedCurrency == AppCurrency.USD
+        ? _expense / settings.exchangeRate
+        : _expense;
+  }
 }
+
+enum TransactionFilter { all, income, expense }
