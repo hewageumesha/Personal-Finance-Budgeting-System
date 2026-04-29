@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
+import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:provider/provider.dart';
 
 // check Quick actions this widget relate to it
@@ -24,8 +25,11 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final financeProvider = context.watch<FinanceProvider>();
+    final settingProvider = context.watch<SettingProvider>();
     final themeColor = widget.isExpense ? Colors.red : Colors.green;
     final uid = context.read<AuthProviderr>().user?.uid;
+
+    final currencyIcon = settingProvider.selectedCurrency == AppCurrency.USD ? Icons.attach_money : Icons.payments_outlined;
 
     return Padding(
       padding: EdgeInsets.only(
@@ -54,10 +58,10 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               prefixIcon: Icon(
-                Icons.attach_money,
+                currencyIcon,
                 color: themeColor,
               ),
-              labelText: "Amount",
+              labelText: "Amount In ${settingProvider.selectedCurrency.name}",
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             ),
@@ -150,7 +154,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
                     userUid: uid as String,
                     title: _titleController.text);
 
-                financeProvider.addTransaction(tx);
+                financeProvider.addTransaction(tx,settingProvider);
 
                 Navigator.pop(context);
               },

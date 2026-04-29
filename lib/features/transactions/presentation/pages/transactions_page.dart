@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:personal_finance_budgeting_system/core/utils/string_utils.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
+import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -32,20 +33,22 @@ class _TransactionsPageState extends State<TransactionsPage> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<FinanceProvider>();
-    final transations = provider.getFilteredTransactions;
+    final settingProvider = context.watch<SettingProvider>();
+    final transactions = provider.getFilteredTransactions;
+
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transactions'),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.add_circle_outline),
-        //     onPressed: () {
-        //
-        //    },
-        //     tooltip: 'Add New Transaction',
-        //   ),
-        // ],
+        title: const Text('Summary'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.file_download),
+            onPressed: () {
+              context.read<FinanceProvider>().exportTransactionsToCsv();
+           },
+            tooltip: 'Summary',
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -64,7 +67,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             ),
           ),
           Expanded(
-            child: transations.isEmpty
+            child: transactions.isEmpty
                 ? Center(
                     child: Text(
                       'No transactions found for this filter.',
@@ -72,10 +75,12 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     ),
                   )
                 : ListView.builder(
-                    itemCount: transations.length,
+                    itemCount: transactions.length,
                     itemBuilder: (context, index) {
-                      final tx = transations[index];
+                      final tx = transactions[index];
                       final isExpense = tx.amount < 0;
+                      final double displayAmount = settingProvider.selectedCurrency == AppCurrency.USD ? tx.amount.abs() / settingProvider.exchangeRate : tx.amount.abs();
+
 
                       return Card(
                         margin: const EdgeInsets.symmetric(
@@ -94,7 +99,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                   tx.categoryName),
                             ),
                           ),
-                          title: Text(tx.title,
+                          title: Text(StringUtils.capitalizeWords(tx.title),
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           subtitle: Text('${tx.categoryName} - ${tx.date}',
@@ -103,7 +108,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                   .bodySmall
                                   ?.copyWith(color: AppColors.grey600)),
                           trailing: Text(
-                            '${isExpense ? '-' : '+'}\$${tx.amount.abs().toStringAsFixed(2)}',
+                            '${isExpense ? '-' : '+'}${settingProvider.currencySymbol}${displayAmount.toStringAsFixed(2)}',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium

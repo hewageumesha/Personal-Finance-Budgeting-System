@@ -80,14 +80,14 @@ class _DashBoardPageState extends State<DashboardPage> {
           padding: const EdgeInsets.all(16),
           children: [
             Text(
-              'Welcome, ${authProvider.user?.username} !',
+              'Welcome, ${authProvider.user?.username} 👋',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.onBackgroundColor,
                   ),
             ),
             const SizedBox(
-              height: 24,
+              height: 10,
             ),
             const BalanceCard(),
             const SizedBox(

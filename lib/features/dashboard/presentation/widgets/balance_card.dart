@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
+import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import '../../../../shared/styles/app_colors.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +9,8 @@ class BalanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provide = context.watch<FinanceProvider>();
+    final provider = context.watch<FinanceProvider>();
+    final settingProvider = context.watch<SettingProvider>();
 
     return Card(
       elevation: 8,
@@ -42,7 +44,8 @@ class BalanceCard extends StatelessWidget {
             ),
             const SizedBox(height: 10.0),
             Text(
-              '\$${provide.totalBalance?.toStringAsFixed(2)}',
+              // '\$${provide.totalBalance?.toStringAsFixed(2)}',
+              '${settingProvider.currencySymbol}${provider.getDisplayTotalBalance(settingProvider).toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     color: AppColors.onPrimaryColor,
                     fontWeight: FontWeight.bold,
@@ -53,10 +56,10 @@ class BalanceCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildBalanceDetail(context, 'Income','\$${provide.income} ',
+                _buildBalanceDetail(context, 'Income','${settingProvider.currencySymbol}${provider.getDisplayIncome(settingProvider).toStringAsFixed(2)}',
                     Icons.arrow_upward),
                 _buildBalanceDetail(context, 'Expenses',
-                    '- \$${provide.expense}', Icons.arrow_downward),
+                    '- ${settingProvider.currencySymbol}${provider.getDisplayExpense(settingProvider).toStringAsFixed(2)}',Icons.arrow_downward),
               ],
             ),
           ],

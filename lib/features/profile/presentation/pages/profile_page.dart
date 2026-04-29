@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:personal_finance_budgeting_system/routes/app_router.dart';
+import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
+import 'package:provider/provider.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -12,6 +12,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final settingsProvider = context.watch<SettingProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
@@ -23,7 +26,7 @@ class ProfilePage extends StatelessWidget {
           children: [
             _buildProfileHeader(context),
             const SizedBox(height: 24.0),
-            _buildAccountSettings(context),
+            _buildAccountSettings(context,settingsProvider),
             const SizedBox(height: 24.0),
             _buildAppPreferences(context),
             const SizedBox(height: 24.0),
@@ -110,7 +113,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountSettings(BuildContext context) {
+  Widget _buildAccountSettings(BuildContext context,SettingProvider settings) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -120,8 +123,22 @@ class ProfilePage extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
-              _buildProfileListItem(context, Icons.lock, 'Change Password', () { /* TODO: Navigate to Change Password */ }),
-              _buildProfileListItem(context, Icons.currency_exchange, 'Currency Preferences', () { /* TODO: Navigate to Currency Preferences */ }),
+              _buildProfileListItem(context, Icons.lock, 'Change Password', () {}),
+
+              ListTile(
+                leading: const Icon(Icons.currency_exchange,color:  Colors.green ,),
+                title: const Text("Currency Preference"),
+                subtitle: Text("Currency showing in ${settings.selectedCurrency.name}"),
+                trailing: Text(
+                  settings.selectedCurrency == AppCurrency.LKR ? "LKR (Rs.)" : "USD (\$)",
+                  style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.green),
+                ),
+                onTap: (){
+                  settings.toggleCurrency();
+                },
+
+              ),
+
               _buildProfileListItem(context, Icons.notifications, 'Notification Settings', () { /* TODO: Navigate to Notification Settings */ }),
             ],
           ),

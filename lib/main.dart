@@ -7,6 +7,7 @@ import 'package:personal_finance_budgeting_system/features/authentication/presen
 import 'package:personal_finance_budgeting_system/features/finance/data/repositories/finance_repository_impl.dart';
 import 'package:personal_finance_budgeting_system/features/finance/data/sources/local/finance_local_data.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
+import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:personal_finance_budgeting_system/routes/app_router.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_theme.dart';
@@ -44,7 +45,8 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => AuthProviderr(authRepository)),
-      ChangeNotifierProvider(create: (_) => FinanceProvider(financeRepository))
+      ChangeNotifierProvider(create: (_) => SettingProvider()),
+      ChangeNotifierProvider(create: (_) => FinanceProvider(financeRepository)),
     ],
     child: const MyApp(),
   ));
