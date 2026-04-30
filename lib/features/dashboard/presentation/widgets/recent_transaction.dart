@@ -29,7 +29,6 @@ class RecentTransaction extends StatelessWidget {
           'Recent Transactions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
               ),
         ),
         const SizedBox(height: 16.0),

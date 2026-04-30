@@ -48,7 +48,6 @@ class AnalyticsPage extends StatelessWidget {
                   'Spending Trend (Last 7 Days)',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.onBackgroundColor,
                       ),
                 ),
                 const SizedBox(height: 16.0),
@@ -58,7 +57,6 @@ class AnalyticsPage extends StatelessWidget {
                   'Expense Breakdown',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.onBackgroundColor,
                       ),
                 ),
                 const SizedBox(height: 16.0),
@@ -68,7 +66,6 @@ class AnalyticsPage extends StatelessWidget {
                   'Financial Insights',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.onBackgroundColor,
                       ),
                 ),
                 const SizedBox(height: 16.0),
@@ -124,7 +121,7 @@ class AnalyticsPage extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.surfaceColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),
@@ -197,7 +194,7 @@ class AnalyticsPage extends StatelessWidget {
       height: 300,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.surfaceColor,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5)),

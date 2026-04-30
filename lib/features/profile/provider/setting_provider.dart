@@ -7,14 +7,15 @@ class SettingProvider extends ChangeNotifier {
   final CurrencyService _currencyService = CurrencyService();
 
   AppCurrency _selectedCurrency = AppCurrency.LKR;
-  double _exchangeRate = 1.0; // 1 LKR = 1 LKR
+  double _exchangeRate = 1.0;
   bool _isLoading = false;
+  ThemeMode _themeMode = ThemeMode.light;
 
   AppCurrency get selectedCurrency => _selectedCurrency;
-
   double get exchangeRate => _exchangeRate;
-
   bool get isLoading => _isLoading;
+  ThemeMode get themeMode => _themeMode;
+  bool get isDarkMode => _themeMode == ThemeMode.dark;
 
   String get currencySymbol {
     switch (_selectedCurrency) {
@@ -27,7 +28,11 @@ class SettingProvider extends ChangeNotifier {
     }
   }
 
-  // Cycles through LKR -> USD -> EUR -> LKR
+  void toggleTheme() {
+    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
+
   void toggleCurrency() async {
     if (_selectedCurrency == AppCurrency.LKR) {
       _selectedCurrency = AppCurrency.USD;
@@ -45,25 +50,11 @@ class SettingProvider extends ChangeNotifier {
     }
   }
 
-  // Allow setting a specific currency
-  void setCurrency(AppCurrency currency) async {
-    if (_selectedCurrency == currency) return;
-
-    _selectedCurrency = currency;
-    if (_selectedCurrency == AppCurrency.LKR) {
-      _exchangeRate = 1.0;
-      notifyListeners();
-    } else {
-      await fetchLastestRate();
-    }
-  }
-
   Future<void> fetchLastestRate() async {
     _isLoading = true;
     notifyListeners();
     try {
       _exchangeRate = await _currencyService.fetchRateToLkr(_selectedCurrency.name);
-      print("New rate for ${_selectedCurrency.name}: $_exchangeRate");
     } catch (e) {
       debugPrint("Rate fetch failed $e");
     } finally {

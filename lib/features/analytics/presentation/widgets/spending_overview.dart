@@ -42,7 +42,6 @@ class _SpendingOverviewState extends State<SpendingOverview> {
           'Spending Overview',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
               ),
         ),
         const SizedBox(height: 16.0),
@@ -51,11 +50,11 @@ class _SpendingOverviewState extends State<SpendingOverview> {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.surfaceColor,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.05),
                 spreadRadius: 2,
                 blurRadius: 5,
                 offset: const Offset(0, 3),
@@ -94,37 +93,42 @@ class _SpendingOverviewState extends State<SpendingOverview> {
                         ),
                         const SizedBox(width: 16),
                         // Legend
-                        SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: data.map((item) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 12,
-                                      height: 12,
-                                      decoration: BoxDecoration(
-                                        color: item.color,
-                                        shape: BoxShape.circle,
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: data.map((item) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 12,
+                                        height: 12,
+                                        decoration: BoxDecoration(
+                                          color: item.color,
+                                          shape: BoxShape.circle,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      StringUtils.capitalizeWords(item.name),
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: touchedIndex == data.indexOf(item)
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
+                                      const SizedBox(width: 8),
+                                      Flexible(
+                                        child: Text(
+                                          StringUtils.capitalizeWords(item.name),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: touchedIndex == data.indexOf(item)
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                       ],
@@ -141,7 +145,6 @@ class _SpendingOverviewState extends State<SpendingOverview> {
       final radius = isTouched ? 60.0 : 50.0;
       final item = data[i];
 
-      // 🟢 Fix: Display amount in selected currency (LKR, USD, or EUR)
       double displayAmount = item.amount;
       if (settings.selectedCurrency != AppCurrency.LKR) {
         displayAmount = item.amount / settings.exchangeRate;

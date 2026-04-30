@@ -83,7 +83,6 @@ class _DashBoardPageState extends State<DashboardPage> {
               'Welcome, ${authProvider.user?.username} 👋',
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.onBackgroundColor,
                   ),
             ),
             const SizedBox(

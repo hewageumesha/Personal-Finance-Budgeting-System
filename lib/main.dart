@@ -62,10 +62,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.read<AuthProviderr>();
+    final settingsProvider = context.watch<SettingProvider>();
 
     return MaterialApp.router(
       title: 'FinFlow',
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: settingsProvider.themeMode,
       routerConfig: AppRouter.router(authProvider),
       debugShowCheckedModeBanner: false,
     );
