@@ -104,5 +104,14 @@ class FinanceRepositoryImpl implements FinanceRepository {
     }
   }
 
+  @override
+  Future<void> updateTransaction(TransactionEntity transaction) async {
+    try{
+      return await financeLocalData.updateLocalTransaction(TransactionModel.fromEntity(transaction));
+    }catch(e){
+      throw  Exception('Failed to update transaction: $e');
+    }
+  }
+
 
 }

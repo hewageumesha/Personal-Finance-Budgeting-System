@@ -114,6 +114,11 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildAccountSettings(BuildContext context,SettingProvider settings) {
+    String currencyDisplay = "";
+    if (settings.selectedCurrency == AppCurrency.LKR) currencyDisplay = "LKR (Rs.)";
+    else if (settings.selectedCurrency == AppCurrency.USD) currencyDisplay = "USD (\$)";
+    else currencyDisplay = "EUR (€)";
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -130,7 +135,7 @@ class ProfilePage extends StatelessWidget {
                 title: const Text("Currency Preference"),
                 subtitle: Text("Currency showing in ${settings.selectedCurrency.name}"),
                 trailing: Text(
-                  settings.selectedCurrency == AppCurrency.LKR ? "LKR (Rs.)" : "USD (\$)",
+                  currencyDisplay,
                   style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.green),
                 ),
                 onTap: (){
@@ -201,4 +206,3 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
-

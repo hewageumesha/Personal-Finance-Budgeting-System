@@ -4,7 +4,7 @@ import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart'
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isLoading;
   final Color? backgroundColor;
   final Color? textColor;

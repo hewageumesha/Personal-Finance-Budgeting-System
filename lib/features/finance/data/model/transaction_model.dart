@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
 
 class TransactionModel extends TransactionEntity {
@@ -11,7 +9,10 @@ class TransactionModel extends TransactionEntity {
       required super.cid,
       required super.userUid,
       required super.title,
-      super.categoryName});
+      super.categoryName,
+      super.latitude,
+      super.longitude,
+      super.locationName});
 
   // fromEntity
   factory TransactionModel.fromEntity(TransactionEntity entity) {
@@ -23,7 +24,10 @@ class TransactionModel extends TransactionEntity {
         cid: entity.cid,
         userUid: entity.userUid,
         title: entity.title,
-        categoryName: entity.categoryName);
+        categoryName: entity.categoryName,
+        latitude: entity.latitude,
+        longitude: entity.longitude,
+        locationName: entity.locationName);
   }
 
   // fetch from db
@@ -32,14 +36,17 @@ class TransactionModel extends TransactionEntity {
         tid: map['tid'],
         amount: map['amount'],
         date: DateTime.parse(map['date']),
-        description: map['description'],
+        description: map['description'] ?? '',
         cid: map['category_id'],
         userUid: map['user_uid'],
         title: map['title'],
-        categoryName: map['categoryName']);
+        categoryName: map['categoryName'],
+        latitude: map['latitude'],
+        longitude: map['longitude'],
+        locationName: map['location_name']);
   }
 
-  // convert category to map , for database operations
+  // convert to map , for database operations
   Map<String, dynamic> toMap() {
     return {
       'tid': tid,
@@ -48,7 +55,10 @@ class TransactionModel extends TransactionEntity {
       'date': date.toIso8601String(),
       'description': description,
       'category_id': cid,
-      'user_uid': userUid
+      'user_uid': userUid,
+      'latitude': latitude,
+      'longitude': longitude,
+      'location_name': locationName,
     };
   }
 }

@@ -12,6 +12,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
@@ -25,10 +26,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
             icon: Icon(Icons.analytics),
             label: 'Analytics',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet),
-            label: 'Budget',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.account_balance_wallet),
+          //   label: 'Budget',
+          // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
@@ -45,15 +46,11 @@ class ScaffoldWithNavBar extends StatelessWidget {
     final String location = GoRouterState.of(context).uri.toString();
 
     if (location.startsWith('/dashboard')) {
+      if (location.contains('/transactions')) return 1;
+      if (location.contains('/analytics')) return 2;
+      // if (location.contains('/budget')) return 3;
+      if (location.contains('/profile')) return 3; // Shifted due to budget removal
       return 0;
-    } else if (location.startsWith('/transactions')) {
-      return 1;
-    } else if (location.startsWith('/analytics')) {
-      return 2;
-    } else if (location.startsWith('/budget')) {
-      return 3;
-    } else if (location.startsWith('/profile')) {
-      return 4;
     }
     return 0;
   }
@@ -69,10 +66,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
       case 2:
         GoRouter.of(context).go('/dashboard/analytics');
         break;
-      case 3:
-        GoRouter.of(context).go('/dashboard/budget');
-        break;
-      case 4:
+      // case 3:
+      //   GoRouter.of(context).go('/dashboard/budget');
+      //   break;
+      case 3: // Profile was 4, now 3
         GoRouter.of(context).go('/dashboard/profile');
         break;
     }
