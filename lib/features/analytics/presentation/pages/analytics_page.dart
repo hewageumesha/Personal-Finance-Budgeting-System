@@ -232,6 +232,7 @@ class AnalyticsPage extends StatelessWidget {
   }
 
   Widget _buildInsightsList(BuildContext context, List<TransactionEntity> transactions, List<CategoryEntity> categories) {
+    // 1. Totals
     double totalIncome = transactions
         .where((t) => categories.any((c) => c.cid == t.cid && c.cType == CategoryType.income))
         .fold(0.0, (sum, t) => sum + t.amount.abs());
@@ -240,13 +241,58 @@ class AnalyticsPage extends StatelessWidget {
         .where((t) => categories.any((c) => c.cid == t.cid && c.cType == CategoryType.expense))
         .fold(0.0, (sum, t) => sum + t.amount.abs());
 
+    // 2. Highest Spending & Frequency
+    Map<String, double> categoryExpenseMap = {};
+    Map<String, int> categoryCountMap = {};
+    TransactionEntity? largestExpense;
+
+    for (var t in transactions) {
+      final matching = categories.where((c) => c.cid == t.cid);
+      if (matching.isNotEmpty) {
+        final cat = matching.first;
+        if (cat.cType == CategoryType.expense) {
+          categoryExpenseMap[cat.cname] = (categoryExpenseMap[cat.cname] ?? 0) + t.amount.abs();
+          categoryCountMap[cat.cname] = (categoryCountMap[cat.cname] ?? 0) + 1;
+
+          if (largestExpense == null || t.amount.abs() > largestExpense.amount.abs()) {
+            largestExpense = t;
+          }
+        }
+      }
+    }
+
+    String topCategory = '';
+    double maxExp = 0;
+    categoryExpenseMap.forEach((k, v) { if (v > maxExp) { maxExp = v; topCategory = k; } });
+
+    String frequentCategory = '';
+    int maxCount = 0;
+    categoryCountMap.forEach((k, v) { if (v > maxCount) { maxCount = v; frequentCategory = k; } });
+
+    // 3. Metrics
+    double savingsRate = totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome) * 100 : 0;
+
+    final daysCount = transactions.map((t) => DateTime(t.date.year, t.date.month, t.date.day)).toSet().length;
+    double dailyAvg = daysCount > 0 ? totalExpense / daysCount : 0;
+
     return Column(
       children: [
         if (totalExpense > totalIncome && totalIncome > 0)
-          _buildInsightCard(context, 'Your expenses exceed your income this month!', Icons.warning_rounded, AppColors.errorColor),
-        if (totalIncome > totalExpense)
-          _buildInsightCard(context, 'Great! You have saved money this month.', Icons.savings_rounded, AppColors.successColor),
-        _buildInsightCard(context, 'You have recorded ${transactions.length} transactions total.', Icons.receipt_long_rounded, AppColors.infoColor),
+          _buildInsightCard(context, 'Warning: You are spending more than you earn this period.', Icons.priority_high_rounded, AppColors.errorColor),
+
+        _buildInsightCard(context, 'Savings Rate: You saved ${savingsRate.toStringAsFixed(1)}% of your income.', Icons.savings_rounded, AppColors.successColor),
+
+        if (topCategory.isNotEmpty)
+          _buildInsightCard(context, 'Top Category: Most of your money goes to "${StringUtils.capitalizeWords(topCategory)}".', Icons.pie_chart_rounded, AppColors.primaryColor),
+
+        if (frequentCategory.isNotEmpty)
+          _buildInsightCard(context, 'Frequency: You spend at "${StringUtils.capitalizeWords(frequentCategory)}" most often ($maxCount times).', Icons.repeat_rounded, AppColors.infoColor),
+
+        if (largestExpense != null)
+          _buildInsightCard(context, 'Largest Expense: Your single biggest purchase was "${StringUtils.capitalizeWords(largestExpense.title)}" (${largestExpense.amount.abs().toStringAsFixed(2)}).', Icons.shopping_bag_rounded, AppColors.accentColor),
+
+        if (dailyAvg > 0)
+          _buildInsightCard(context, 'Daily Burn: You spend an average of \$${dailyAvg.toStringAsFixed(2)} per day.', Icons.speed_rounded, Colors.deepPurpleAccent),
       ],
     );
   }
@@ -263,12 +309,16 @@ class AnalyticsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Icon(icon, color: color, size: 28),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+              child: Icon(icon, color: color, size: 24),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
                 insight,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
               ),
             ),
           ],

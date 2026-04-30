@@ -57,12 +57,13 @@ class RecentTransaction extends StatelessWidget {
               child: ListTile(
                 // Icon in the recent transaction
                 leading: CircleAvatar(
-                  backgroundColor:
-                      CategoryIconHelper.getIconColor(tx.categoryName),
+                  backgroundColor: CategoryIconHelper.getIconColor(
+                          tx.categoryName ?? '')
+                      .withOpacity(0.1),
                   child: Icon(
                     // 🟢 Use the utility class helper to get the icon based on category
                     CategoryIconHelper.getIcon(tx.categoryName ?? ''),
-                    color: AppColors.primaryColor,
+                    color: CategoryIconHelper.getIconColor(tx.categoryName),
                   ),
                 ),
                 title: Text(
@@ -100,7 +101,7 @@ class RecentTransaction extends StatelessWidget {
                   // 🟢 UX: Formatting with minus/plus and colors
                   "${isExpense ? '-' : '+'} ${settingProvider.currencySymbol}${displayAmount.toStringAsFixed(2)}",
                   style: TextStyle(
-                      color: isExpense ? AppColors.errorColor : Colors.green,
+                      color: isExpense ? AppColors.errorColor : AppColors.successColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),

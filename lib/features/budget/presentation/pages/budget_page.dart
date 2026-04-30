@@ -26,7 +26,6 @@ class BudgetPage extends StatelessWidget {
               'Monthly Budget Overview',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
               ),
             ),
             const SizedBox(height: 16.0),
@@ -36,7 +35,6 @@ class BudgetPage extends StatelessWidget {
               'Budget Categories',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
               ),
             ),
             const SizedBox(height: 16.0),
@@ -126,7 +124,6 @@ class BudgetPage extends StatelessWidget {
                     category,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.onBackgroundColor,
                     ),
                   ),
                 ),

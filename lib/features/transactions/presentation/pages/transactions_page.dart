@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:personal_finance_budgeting_system/core/utils/string_utils.dart';
 import 'package:personal_finance_budgeting_system/features/dashboard/presentation/widgets/add_transaction_bottom_sheet.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
@@ -92,6 +93,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     ? tx.amount.abs() / settingProvider.exchangeRate
                     : tx.amount.abs();
 
+                // 🟢 Format date and time
+                final formattedDate = DateFormat('MMM dd, yyyy • hh:mm a').format(tx.date);
+
                 return Dismissible(
                   key: Key(tx.tid),
                   direction: DismissDirection.endToStart,
@@ -143,7 +147,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('${tx.categoryName} - ${tx.date}',
+                          Text('${tx.categoryName} • $formattedDate',
                               style: Theme
                                   .of(context)
                                   .textTheme
@@ -246,7 +250,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
       checkmarkColor: AppColors.primaryColor,
       labelStyle: TextStyle(
         color:
-        isSelected ? AppColors.primaryColor : AppColors.onBackgroundColor,
+        isSelected ? AppColors.primaryColor : null, // Removed hardcoded onBackgroundColor
         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
       ),
       side: BorderSide(color: AppColors.primaryColor.withOpacity(0.5)),
