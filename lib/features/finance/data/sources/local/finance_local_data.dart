@@ -69,6 +69,12 @@ class FinanceLocalData {
     }
   }
 
+
+  Future<void> updateLocalTransaction(TransactionModel transaction) async {
+    final db = await _databaseHelper.db;
+    await db?.update('transactions', transaction.toMap(),where: 'tid = ?' ,whereArgs:[transaction.tid]);
+  }
+
   Future<List<TransactionModel>> getLocalTransactions(String uid) async {
     try {
       final db = await _databaseHelper.db;
@@ -189,4 +195,7 @@ class FinanceLocalData {
       throw Exception('database issue $e ❌');
     }
   }
+
+
+
 }

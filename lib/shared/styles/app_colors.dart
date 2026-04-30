@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  // Light Mode Colors
   static const Color primaryColor = Color(0xFF4CAF50); // Green
   static const Color accentColor = Color(0xFFFFC107); // Amber
   static const Color backgroundColor = Color(0xFFF5F5F5); // Light Grey
@@ -13,6 +14,12 @@ class AppColors {
   static const Color onBackgroundColor = Color(0xFF212121); // Dark Grey
   static const Color onSurfaceColor = Color(0xFF212121); // Dark Grey
   static const Color onErrorColor = Color(0xFFFFFFFF); // White
+
+  // Dark Mode Colors
+  static const Color darkBackgroundColor = Color(0xFF121212);
+  static const Color darkSurfaceColor = Color(0xFF1E1E1E);
+  static const Color darkOnBackgroundColor = Color(0xFFE1E1E1);
+  static const Color darkOnSurfaceColor = Color(0xFFE1E1E1);
 
   static const Color successColor = Color(0xFF8BC34A); // Light Green
   static const Color warningColor = Color(0xFFFF9800); // Orange

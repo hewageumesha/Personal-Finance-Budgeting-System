@@ -20,6 +20,8 @@ abstract class FinanceRepository {
   Future<List<TransactionEntity>> getFilteredTransactions(
       String filter, String uid);
 
+  Future<void> updateTransaction(TransactionEntity transaction);
+
   // analytics
   Future<double> getTotalBalance(String uid);
 

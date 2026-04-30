@@ -5,6 +5,7 @@ import 'package:personal_finance_budgeting_system/features/authentication/presen
 import 'package:personal_finance_budgeting_system/features/finance/data/repositories/finance_repository_impl.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/category_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
+import 'package:personal_finance_budgeting_system/features/location/location_service.dart';
 import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import '../../domain/repositories/finance_repository.dart';
 import 'dart:io';
@@ -69,6 +70,9 @@ class FinanceProvider extends ChangeNotifier {
       _income = income as double;
       _expense = expense as double;
 
+      // 🟢 Fix: Refresh filtered transactions too
+      await changeFilter(_selectedFilter, uid);
+
       print(transactions);
     } catch (e) {
       _errMessage = e.toString();
@@ -86,12 +90,34 @@ class FinanceProvider extends ChangeNotifier {
 
     try {
       double amountLkr = transaction.amount;
+      double? lat;
+      double? lng;
+      String? locName;
 
-      if (settings.selectedCurrency == AppCurrency.USD) {
+
+      try {
+        final locService = LocationService();
+        final position = await locService.fetchCurrentLocation();
+        if (position != null) {
+          lat = position.latitude;
+          lng = position.longitude;
+          locName = await locService.getLocationName(lat, lng);
+        }
+      } catch (e) {
+        debugPrint("📍 Location capture failed: $e");
+      }
+
+      // 🟢 Fix: Use exchange rate for any currency other than LKR
+      if (settings.selectedCurrency != AppCurrency.LKR) {
         amountLkr = transaction.amount * settings.exchangeRate;
       }
 
-      final normalizedTransaction = transaction.copyWith(amount: amountLkr);
+      final normalizedTransaction = transaction.copyWith(
+          amount: amountLkr,
+          latitude: lat,
+          longitude: lng,
+          locationName: locName
+      );
 
       await _financeRepository.addTransaction(normalizedTransaction);
 
@@ -157,22 +183,70 @@ class FinanceProvider extends ChangeNotifier {
     }
   }
 
-  // check later
+  Future<void> updateTransaction(
+      TransactionEntity transaction, SettingProvider settings) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      double amountLkr = transaction.amount;
+
+      // 🟢 Fix: Use exchange rate for any currency other than LKR
+      if (settings.selectedCurrency != AppCurrency.LKR) {
+        amountLkr = transaction.amount * settings.exchangeRate;
+      }
+
+      final normalizedTransaction = transaction.copyWith(amount: amountLkr);
+      await _financeRepository.updateTransaction(normalizedTransaction);
+      await loadFinanceData(transaction.userUid);
+
+    } catch (e) {
+      _errMessage = e.toString();
+      debugPrint("❌ Error updating transaction: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+  Future<void> deleteTransaction(String tid, String uid) async {
+
+    transactions.removeWhere((tx) => tx.tid == tid);
+    _filteredTransactions.removeWhere((tx) => tx.tid == tid);
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _financeRepository.removeTransaction(tid);
+      await loadFinanceData(uid);
+    } catch (e) {
+      _errMessage = e.toString();
+      debugPrint("❌ Error deleting transaction: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+  // 🟢 Fix: Use exchange rate for any currency other than LKR
   double getDisplayTotalBalance(SettingProvider settings) {
     if (_totalBalance == null) return 0.0;
-    return settings.selectedCurrency == AppCurrency.USD
+    return settings.selectedCurrency != AppCurrency.LKR
         ? _totalBalance! / settings.exchangeRate
         : _totalBalance!;
   }
 
   double getDisplayIncome(SettingProvider settings) {
-    return settings.selectedCurrency == AppCurrency.USD
+    return settings.selectedCurrency != AppCurrency.LKR
         ? _income / settings.exchangeRate
         : _income;
   }
 
   double getDisplayExpense(SettingProvider settings) {
-    return settings.selectedCurrency == AppCurrency.USD
+    return settings.selectedCurrency != AppCurrency.LKR
         ? _expense / settings.exchangeRate
         : _expense;
   }

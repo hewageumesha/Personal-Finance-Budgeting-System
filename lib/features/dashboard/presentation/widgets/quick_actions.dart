@@ -15,7 +15,6 @@ class QuickActions extends StatelessWidget {
           'Quick Actions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
               ),
         ),
         const SizedBox(height: 16.0),
@@ -57,7 +56,6 @@ class QuickActions extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.onBackgroundColor,
                 fontWeight: FontWeight.w600,
               ),
         ),

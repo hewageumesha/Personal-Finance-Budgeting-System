@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path/path.dart';
 import 'package:personal_finance_budgeting_system/core/utils/string_utils.dart';
 import 'package:personal_finance_budgeting_system/core/utils/category_icon_helper.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
@@ -17,14 +16,11 @@ class RecentTransaction extends StatelessWidget {
     final settingProvider = context.watch<SettingProvider>();
     final transactions = provider.transactions;
 
-
     if (transactions.isEmpty) {
       return const Center(
         child: Text("No Transactions yet Today"),
       );
     }
-
-
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +29,6 @@ class RecentTransaction extends StatelessWidget {
           'Recent Transactions',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.onBackgroundColor,
               ),
         ),
         const SizedBox(height: 16.0),
@@ -46,7 +41,11 @@ class RecentTransaction extends StatelessWidget {
             final tx = transactions[index];
             final isExpense = tx.amount < 0;
 
-            final double displayAmount = settingProvider.selectedCurrency == AppCurrency.USD ? tx.amount.abs() / settingProvider.exchangeRate : tx.amount.abs();
+            // 🟢 Fix: Use generic conversion for all non-LKR currencies (USD, EUR)
+            final double displayAmount =
+                settingProvider.selectedCurrency != AppCurrency.LKR
+                    ? tx.amount.abs() / settingProvider.exchangeRate
+                    : tx.amount.abs();
 
             return Card(
               margin: const EdgeInsets.only(bottom: 10),
@@ -58,28 +57,51 @@ class RecentTransaction extends StatelessWidget {
               child: ListTile(
                 // Icon in the recent transaction
                 leading: CircleAvatar(
-                  backgroundColor:
-                      CategoryIconHelper.getIconColor(tx.categoryName),
+                  backgroundColor: CategoryIconHelper.getIconColor(
+                          tx.categoryName ?? '')
+                      .withOpacity(0.1),
                   child: Icon(
                     // 🟢 Use the utility class helper to get the icon based on category
                     CategoryIconHelper.getIcon(tx.categoryName ?? ''),
-                    color: AppColors.primaryColor,
+                    color: CategoryIconHelper.getIconColor(tx.categoryName),
                   ),
                 ),
-                title: Text(StringUtils.capitalizeWords(tx.title) ?? "Transaction",
+                title: Text(
+                    StringUtils.capitalizeWords(tx.title) ?? "Transaction",
                     style: const TextStyle(fontWeight: FontWeight.bold)),
 
-                subtitle: Text('${tx.categoryName}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: AppColors.grey600)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${tx.categoryName}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: AppColors.grey600)),
+                    if (tx.locationName != null && tx.locationName!.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.location_on,
+                                size: 10, color: Colors.blueGrey),
+                            const SizedBox(width: 2),
+                            Text(
+                              tx.locationName!,
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.blueGrey),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
 
                 trailing: Text(
                   // 🟢 UX: Formatting with minus/plus and colors
                   "${isExpense ? '-' : '+'} ${settingProvider.currencySymbol}${displayAmount.toStringAsFixed(2)}",
                   style: TextStyle(
-                      color: isExpense ? AppColors.errorColor : Colors.green,
+                      color: isExpense ? AppColors.errorColor : AppColors.successColor,
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),

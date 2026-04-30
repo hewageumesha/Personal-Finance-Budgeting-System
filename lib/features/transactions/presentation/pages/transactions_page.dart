@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:personal_finance_budgeting_system/core/utils/string_utils.dart';
+import 'package:personal_finance_budgeting_system/features/dashboard/presentation/widgets/add_transaction_bottom_sheet.dart';
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
@@ -21,7 +23,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        final uid = context.read<AuthProviderr>().user?.uid;
+        final uid = context
+            .read<AuthProviderr>()
+            .user
+            ?.uid;
 
         context
             .read<FinanceProvider>()
@@ -36,7 +41,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
     final settingProvider = context.watch<SettingProvider>();
     final transactions = provider.getFilteredTransactions;
 
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Summary'),
@@ -45,7 +49,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             icon: const Icon(Icons.file_download),
             onPressed: () {
               context.read<FinanceProvider>().exportTransactionsToCsv();
-           },
+            },
             tooltip: 'Summary',
           ),
         ],
@@ -69,73 +73,172 @@ class _TransactionsPageState extends State<TransactionsPage> {
           Expanded(
             child: transactions.isEmpty
                 ? Center(
-                    child: Text(
-                      'No transactions found for this filter.',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  )
+              child: Text(
+                'No transactions found for this filter.',
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .titleMedium,
+              ),
+            )
                 : ListView.builder(
-                    itemCount: transactions.length,
-                    itemBuilder: (context, index) {
-                      final tx = transactions[index];
-                      final isExpense = tx.amount < 0;
-                      final double displayAmount = settingProvider.selectedCurrency == AppCurrency.USD ? tx.amount.abs() / settingProvider.exchangeRate : tx.amount.abs();
+              itemCount: transactions.length,
+              itemBuilder: (context, index) {
+                final tx = transactions[index];
+                final isExpense = tx.amount < 0;
+                
+                // 🟢 Fix: Generic conversion logic for all non-LKR currencies (USD, EUR)
+                final double displayAmount =
+                settingProvider.selectedCurrency != AppCurrency.LKR
+                    ? tx.amount.abs() / settingProvider.exchangeRate
+                    : tx.amount.abs();
 
+                // 🟢 Format date and time
+                final formattedDate = DateFormat('MMM dd, yyyy • hh:mm a').format(tx.date);
 
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: CategoryIconHelper.getIconColor(
-                                    tx.categoryName ?? '')
-                                .withOpacity(0.1),
-                            child: Icon(
-                              CategoryIconHelper.getIcon(tx.categoryName ?? ''),
-                              color: CategoryIconHelper.getIconColor(
-                                  tx.categoryName),
-                            ),
-                          ),
-                          title: Text(StringUtils.capitalizeWords(tx.title),
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text('${tx.categoryName} - ${tx.date}',
-                              style: Theme.of(context)
+                return Dismissible(
+                  key: Key(tx.tid),
+                  direction: DismissDirection.endToStart,
+                  confirmDismiss: (direction) async {
+                    return await _showDeleteConfirmation(context);
+                  },
+                  onDismissed: (direction) {
+                    provider.deleteTransaction(tx.tid, tx.userUid);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              '${StringUtils.capitalizeWords(
+                                  tx.title)} deleted')),
+                    );
+                  },
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20.0),
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColors.errorColor,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 8),
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: CategoryIconHelper.getIconColor(
+                            tx.categoryName ?? '')
+                            .withOpacity(0.1),
+                        child: Icon(
+                          CategoryIconHelper.getIcon(
+                              tx.categoryName ?? ''),
+                          color: CategoryIconHelper.getIconColor(
+                              tx.categoryName),
+                        ),
+                      ),
+                      title: Text(StringUtils.capitalizeWords(tx.title),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold)),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('${tx.categoryName} • $formattedDate',
+                              style: Theme
+                                  .of(context)
                                   .textTheme
                                   .bodySmall
                                   ?.copyWith(color: AppColors.grey600)),
-                          trailing: Text(
-                            '${isExpense ? '-' : '+'}${settingProvider.currencySymbol}${displayAmount.toStringAsFixed(2)}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  color: isExpense
-                                      ? AppColors.errorColor
-                                      : AppColors.successColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          onTap: () {
-                            /* TODO: Navigate to transaction detail */
-                          },
+                          if (tx.locationName != null && tx.locationName!.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.location_on,
+                                      size: 10, color: Colors.blueGrey),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    tx.locationName!,
+                                    style: const TextStyle(
+                                        fontSize: 10, color: Colors.blueGrey),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                      trailing: Text(
+                        '${isExpense ? '-' : '+'}${settingProvider
+                            .currencySymbol}${displayAmount.toStringAsFixed(
+                            2)}',
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                          color: isExpense
+                              ? AppColors.errorColor
+                              : AppColors.successColor,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    },
+                      ),
+                      onTap: () {
+                        final bool currentlyIsExpense = tx.amount < 0;
+
+                        showModalBottomSheet(context: context,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                            ),
+                            builder: (context) =>
+                                AddTransactionBottomSheet(transaction: tx, isExpense: currentlyIsExpense,));
+                      },
+                    ),
                   ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
+  Future<bool?> _showDeleteConfirmation(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) =>
+          AlertDialog(
+            title: const Text('Delete Transaction'),
+            content: const Text(
+                'Are you sure you want to permanently remove this transaction?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false), // User cancels
+                child: const Text('CANCEL'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true), // User confirms
+                style: TextButton.styleFrom(
+                    foregroundColor: AppColors.errorColor),
+                child: const Text('DELETE'),
+              ),
+            ],
+          ),
+    );
+  }
+
   Widget _buildFilterChip(BuildContext context, String label,
       TransactionFilter filter, FinanceProvider provider) {
     final isSelected = provider.transactionFilter == filter;
-    final uid = context.watch<AuthProviderr>().user!.uid;
+    final uid = context
+        .watch<AuthProviderr>()
+        .user!
+        .uid;
 
     return FilterChip(
       label: Text(label),
@@ -147,7 +250,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
       checkmarkColor: AppColors.primaryColor,
       labelStyle: TextStyle(
         color:
-            isSelected ? AppColors.primaryColor : AppColors.onBackgroundColor,
+        isSelected ? AppColors.primaryColor : null, // Removed hardcoded onBackgroundColor
         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
       ),
       side: BorderSide(color: AppColors.primaryColor.withOpacity(0.5)),
