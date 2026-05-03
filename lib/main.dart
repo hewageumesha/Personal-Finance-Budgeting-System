@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:personal_finance_budgeting_system/core/services/notification_service.dart';
 import 'package:personal_finance_budgeting_system/features/analytics/presentation/providers/analytics_provider.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/data/repositories/auth_repository_Impl.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
@@ -25,6 +26,8 @@ void main() async {
   final dbHelper = DatabaseHelper.instance;
   await dbHelper.db;
 
+  await NotificationService().init();
+  await NotificationService().scheduleDailyReminder();
 
   try {
     await Firebase.initializeApp(
