@@ -5,7 +5,7 @@ import 'package:personal_finance_budgeting_system/features/authentication/presen
 import 'package:personal_finance_budgeting_system/features/finance/data/repositories/finance_repository_impl.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/category_entity.dart';
 import 'package:personal_finance_budgeting_system/features/finance/domain/entities/transaction_entity.dart';
-import 'package:personal_finance_budgeting_system/features/location/location_service.dart';
+import 'package:personal_finance_budgeting_system/core/services/location_service.dart';
 import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import '../../../../core/services/notification_service.dart';
 import '../../domain/repositories/finance_repository.dart';
