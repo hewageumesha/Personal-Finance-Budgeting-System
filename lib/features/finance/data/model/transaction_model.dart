@@ -12,7 +12,9 @@ class TransactionModel extends TransactionEntity {
       super.categoryName,
       super.latitude,
       super.longitude,
-      super.locationName});
+      super.locationName,
+      super.receiptImagePath,
+      });
 
   // fromEntity
   factory TransactionModel.fromEntity(TransactionEntity entity) {
@@ -27,7 +29,9 @@ class TransactionModel extends TransactionEntity {
         categoryName: entity.categoryName,
         latitude: entity.latitude,
         longitude: entity.longitude,
-        locationName: entity.locationName);
+        locationName: entity.locationName,
+        receiptImagePath: entity.receiptImagePath
+    );
   }
 
   // fetch from db
@@ -43,7 +47,9 @@ class TransactionModel extends TransactionEntity {
         categoryName: map['categoryName'],
         latitude: map['latitude'],
         longitude: map['longitude'],
-        locationName: map['location_name']);
+        locationName: map['location_name'],
+        receiptImagePath: map['receipt_image_path'],
+    );
   }
 
   // convert to map , for database operations
@@ -59,6 +65,7 @@ class TransactionModel extends TransactionEntity {
       'latitude': latitude,
       'longitude': longitude,
       'location_name': locationName,
+      'receipt_image_path' : receiptImagePath
     };
   }
 }

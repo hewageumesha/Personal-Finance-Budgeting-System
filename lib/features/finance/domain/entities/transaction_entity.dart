@@ -10,6 +10,7 @@ class TransactionEntity {
   final double? latitude;
   final double? longitude;
   final String? locationName;
+  final String? receiptImagePath;
 
   TransactionEntity(
       {required this.tid,
@@ -22,7 +23,8 @@ class TransactionEntity {
       this.categoryName,
       this.latitude,
       this.longitude,
-      this.locationName});
+      this.locationName,
+      this.receiptImagePath});
 
   TransactionEntity copyWith({
     String? tid,
@@ -36,6 +38,8 @@ class TransactionEntity {
     double? latitude,
     double? longitude,
     String? locationName,
+    String? receiptImagePath,
+    bool setReceiptImageNull = false,
   }) {
     return TransactionEntity(
       tid: tid ?? this.tid,
@@ -47,6 +51,7 @@ class TransactionEntity {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       locationName: locationName ?? this.locationName,
+      receiptImagePath: setReceiptImageNull ? null : (receiptImagePath ?? this.receiptImagePath),
       cid: cid ?? this.cid,
       userUid: userUid ?? this.userUid,
     );
