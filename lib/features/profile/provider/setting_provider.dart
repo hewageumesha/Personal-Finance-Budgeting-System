@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:personal_finance_budgeting_system/features/currency/currency_service.dart';
+import 'package:personal_finance_budgeting_system/core/services/currency_service.dart';
 
 enum AppCurrency { LKR, USD, EUR }
 
