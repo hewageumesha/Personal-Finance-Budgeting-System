@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:personal_finance_budgeting_system/shared/styles/app_colors.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../authentication/presentation/providers/auth_provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -24,7 +25,8 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildProfileHeader(context, user?.username ?? 'User', user?.email ?? 'No email'),
+            _buildProfileHeader(
+                context, user?.username ?? 'User', user?.email ?? 'No email'),
             const SizedBox(height: 24.0),
             _buildAccountSettings(context, settingsProvider),
             const SizedBox(height: 24.0),
@@ -48,7 +50,8 @@ class ProfilePage extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.errorColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -61,14 +64,16 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context, String username, String email) {
+  Widget _buildProfileHeader(
+      BuildContext context, String username, String email) {
     return Center(
       child: Column(
         children: [
           CircleAvatar(
             radius: 60,
             backgroundColor: AppColors.primaryColor.withOpacity(0.2),
-            child: const Icon(Icons.person, size: 70, color: AppColors.primaryColor),
+            child: const Icon(Icons.person,
+                size: 70, color: AppColors.primaryColor),
           ),
           const SizedBox(height: 16.0),
           Text(
@@ -85,15 +90,16 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           OutlinedButton.icon(
-            onPressed: () {
-              /* TODO: Edit Profile */
+            onPressed: () async {
+
             },
             icon: const Icon(Icons.edit, size: 18),
             label: const Text('Edit Profile'),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primaryColor,
               side: const BorderSide(color: AppColors.primaryColor),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
             ),
           ),
         ],
@@ -128,18 +134,20 @@ class ProfilePage extends StatelessWidget {
         _buildSectionTitle(context, 'Account Settings'),
         Card(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
-              _buildProfileListItem(context, Icons.lock, 'Change Password', () {}),
+              _buildProfileListItem(
+                  context, Icons.lock, 'Change Password', () {}),
               ListTile(
                 leading: const Icon(
                   Icons.currency_exchange,
                   color: Colors.green,
                 ),
                 title: const Text("Currency Preference"),
-                subtitle:
-                    Text("Currency showing in ${settings.selectedCurrency.name}"),
+                subtitle: Text(
+                    "Currency showing in ${settings.selectedCurrency.name}"),
                 trailing: Text(
                   currencyDisplay,
                   style: const TextStyle(
@@ -149,8 +157,8 @@ class ProfilePage extends StatelessWidget {
                   settings.toggleCurrency();
                 },
               ),
-              _buildProfileListItem(context, Icons.notifications,
-                  'Notification Settings', () {
+              _buildProfileListItem(
+                  context, Icons.notifications, 'Notification Settings', () {
                 /* TODO: Navigate to Notification Settings */
               }),
             ],
@@ -167,7 +175,8 @@ class ProfilePage extends StatelessWidget {
         _buildSectionTitle(context, 'App Preferences'),
         Card(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               _buildProfileListItem(
@@ -200,16 +209,20 @@ class ProfilePage extends StatelessWidget {
         _buildSectionTitle(context, 'Support'),
         Card(
           elevation: 2,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
-              _buildProfileListItem(context, Icons.help_outline, 'Help & FAQ', () {
+              _buildProfileListItem(context, Icons.help_outline, 'Help & FAQ',
+                  () {
                 /* TODO: Navigate to Help */
               }),
-              _buildProfileListItem(context, Icons.feedback, 'Send Feedback', () {
+              _buildProfileListItem(context, Icons.feedback, 'Send Feedback',
+                  () {
                 /* TODO: Navigate to Feedback */
               }),
-              _buildProfileListItem(context, Icons.info_outline, 'About App', () {
+              _buildProfileListItem(context, Icons.info_outline, 'About App',
+                  () {
                 /* TODO: Navigate to About */
               }),
             ],
@@ -219,8 +232,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileListItem(BuildContext context, IconData icon, String title,
-      VoidCallback onTap,
+  Widget _buildProfileListItem(
+      BuildContext context, IconData icon, String title, VoidCallback onTap,
       {bool showSwitch = false,
       bool switchValue = false,
       ValueChanged<bool>? onSwitchChanged}) {

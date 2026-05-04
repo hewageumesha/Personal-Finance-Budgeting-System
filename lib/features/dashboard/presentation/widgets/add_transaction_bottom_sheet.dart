@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:personal_finance_budgeting_system/features/analytics/presentation/providers/analytics_provider.dart';
 import 'package:personal_finance_budgeting_system/features/authentication/presentation/providers/auth_provider.dart';
@@ -5,6 +7,8 @@ import 'package:personal_finance_budgeting_system/features/finance/domain/entiti
 import 'package:personal_finance_budgeting_system/features/finance/presentation/provider/finance_provider.dart';
 import 'package:personal_finance_budgeting_system/features/profile/provider/setting_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../core/services/image_picker_service.dart';
 
 class AddTransactionBottomSheet extends StatefulWidget {
   final bool isExpense;
@@ -24,6 +28,7 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
   final _descriptionController = TextEditingController();
   final _titleController = TextEditingController();
   String? _selectedCategoryId;
+  String? _selectedImgPath;
 
   @override
   void initState() {
@@ -39,8 +44,9 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
 
       _amountController.text = displayAmount.toStringAsFixed(2);
       _titleController.text = widget.transaction!.title;
-      _descriptionController.text = widget.transaction!.description ?? '';
+      _descriptionController.text = widget.transaction!.description;
       _selectedCategoryId = widget.transaction!.cid;
+      _selectedImgPath = widget.transaction!.receiptImagePath;
     }
   }
 
@@ -50,6 +56,15 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
     _descriptionController.dispose();
     _titleController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleCameraAction() async {
+    final path = await CameraService().captureAndSaveReceipt();
+    if (path != null) {
+      setState(() {
+        _selectedImgPath = path;
+      });
+    }
   }
 
   @override
@@ -184,6 +199,47 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
               ),
 
             const SizedBox(height: 20),
+            const Text("Receipt Attachment", style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+
+            if(_selectedImgPath != null)
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(
+                      File(_selectedImgPath!),
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedImgPath = null),
+                      child: const CircleAvatar(
+                        radius: 15,
+                        backgroundColor: Colors.red,
+                        child: Icon(Icons.close, color: Colors.white, size: 18),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            else
+              OutlinedButton.icon(
+              onPressed: _handleCameraAction,
+              icon: const Icon(Icons.camera_alt_outlined),
+              label: const Text("Capture Receipt"),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             SizedBox(
               width: double.infinity,
@@ -206,6 +262,8 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
                         amount: amount,
                         description: _descriptionController.text.trim(),
                         cid: _selectedCategoryId!,
+                        receiptImagePath: _selectedImgPath,
+                        setReceiptImageNull: _selectedImgPath == null,
                       );
 
                       await financeProvider.updateTransaction(updatedTx, settingProvider);
@@ -217,7 +275,9 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
                           date: DateTime.now(),
                           description: _descriptionController.text.trim(),
                           userUid: uid!,
-                          title: _titleController.text.trim());
+                          title: _titleController.text.trim(),
+                          receiptImagePath: _selectedImgPath,
+                      );
 
                       await financeProvider.addTransaction(tx, settingProvider);
                     }
@@ -234,7 +294,8 @@ class _AddTransactionBottomSheetState extends State<AddTransactionBottomSheet> {
                     ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                     : Text(isEditing ? 'Update Transaction' : 'Save Transaction', style: const TextStyle(color: Colors.white)),
               ),
-            )
+            ),
+
           ],
         ),
       ),

@@ -21,14 +21,25 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'finflow.db');
 
     // callback func , passing a function
-    return await openDatabase(path, version: 2, onCreate: _createDb, onUpgrade: _onUpgrade);
+    return await openDatabase(path, version: 4, onCreate: _createDb, onUpgrade: _onUpgrade);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('ALTER TABLE transactions ADD COLUMN location_name TEXT');
+    if (oldVersion < 4) {
+      try {
+        await db.execute('ALTER TABLE transactions ADD COLUMN location_name TEXT');
+      } catch (e) {
+        print(e);
+      }
+
+      try {
+        await db.execute('ALTER TABLE transactions ADD COLUMN receipt_image_path TEXT');
+      } catch (e) {
+        print(e);
+      }
     }
   }
+
 
   Future<void> _createDb(Database db, int version) async {
     try {
@@ -57,14 +68,15 @@ class DatabaseHelper {
       await db.execute('''
       CREATE TABLE transactions(
         tid TEXT PRIMARY KEY,
-        amount REAL not null,
-        title text not null,
-        description text,
-        date text not null,
+        amount REAL NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT,
+        date TEXT NOT NULL,
         
-        latitude real,
-        longitude real,
-        location_name text,
+        latitude REAL,
+        longitude REAL,
+        location_name TEXT,
+        receipt_image_path TEXT, 
         
         category_id TEXT NOT NULL, 
         user_uid TEXT NOT NULL,
