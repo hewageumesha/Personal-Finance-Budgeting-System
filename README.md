@@ -75,6 +75,8 @@ lib/
 ```
 ---
 
+## 🎨 Screenshots / Demo
+
 | | | | |
 |---|---|---|---|
 | <img src="https://github.com/user-attachments/assets/6e787fa9-d857-4823-8779-3169bf51dc73" width="180"> | <img src="https://github.com/user-attachments/assets/052a761b-fe63-4f87-bf94-95234dd38deb" width="180"> | <img src="https://github.com/user-attachments/assets/2ee327dd-5084-42b4-b6e8-c956da40c8bd" width="180"> | <img src="https://github.com/user-attachments/assets/21c14a28-53fb-4f0e-a2b3-8145914ec88f" width="180"> |
@@ -122,20 +124,6 @@ lib/
 * REST APIs
 * Provider / Riverpod / Bloc
 * Charts & Graphs for analytics
-
----
-
-## 🎨 Screenshots / Demo
-
-**App Screens:**
-![Login Screen](./screenshots/login.png)
-![Dashboard](./screenshots/dashboard.png)
-![Transaction List](./screenshots/transactions.png)
-
-**Demo GIF:**
-![App Demo](./screenshots/demo.gif)
-
-> Replace placeholders with your actual screenshots/GIFs before publishing
 
 ---
 
